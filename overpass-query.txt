@@ -1,10 +1,14 @@
 // bbox:                  (s,    w,     n,     e    )
 // full GTA bbox:         (43.47,-79.85,43.94,-79.08)
 // testing parkdale bbox: (43.64,-79.44,43.65,-79.43)
-(
-	way [highway] (43.47,-79.85,43.94,-79.08);
-	>; // get nodes of the above ways
-	<; // add ways and relations of the above nodes
-	>; // get nodes of the above ways and relations
-);
+
+// get highways in the bounding box
+way [highway] (43.47,-79.85,43.94,-79.08);
+
+// add relations including the above ways
+(._;<;); 
+
+// get nodes and ways of the above ways and relations
+(._;>;); 
+
 out body;
