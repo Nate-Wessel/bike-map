@@ -1,14 +1,17 @@
-// bbox:                  (s,    w,     n,     e    )
-// full GTA bbox:         (43.47,-79.85,43.94,-79.08)
-// testing parkdale bbox: (43.64,-79.44,43.65,-79.43)
+// define a global bounding box (s,w,n,e)
+[bbox:43.5,-80,44,-79];
 
-// get highways in the bounding box
-way [highway] (43.47,-79.85,43.94,-79.08);
+// full GTA:         43.5,-80,44,-79
+// testing parkdale: 43.64,-79.44,43.65,-79.43
 
-// add relations including the above ways
-(._;<;); 
+// select ways and relations of interest from within the bounding box
+(
+	way[highway];
+  	rel[type=restriction];
+	rel[route=bicycle];
+);
 
-// get nodes and ways of the above ways and relations
+// join any children of the above ways and relations
 (._;>;); 
 
-out body;
+out meta;
