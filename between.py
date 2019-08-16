@@ -14,12 +14,12 @@ cursor.execute("""
 		ST_X(ST_PointN(geom4326,2)) AS dx,
 		ST_Y(ST_PointN(geom4326,2)) AS dy
 	FROM syn_bike_trips
-	WHERE orig <= 625 AND dest <= 625
+	--WHERE orig = 253 AND dest = 6097
 	ORDER BY random()
-	LIMIT 10000;
+	LIMIT 20000;
 """)
 trips = cursor.fetchall()
-print('Starting...')
+print('Starting...',len(trips),'trips')
 
 # OSRM API parameters
 options = {
@@ -45,6 +45,7 @@ for trip in trips:
 	# parse the output
 	j = json.loads(response.text)
 	if j['code'] != 'Ok':
+		print(response.text,'\n')
 		continue
 	# check that the trip isn't too long (e.g. opposite side of a river)	
 	# or too short
