@@ -8,6 +8,7 @@ CREATE TABLE edge_counts (
 COPY edge_counts (n1,n2,count) 
 FROM '/home/nate/bike-map/nodepairs.csv' CSV HEADER;
 
+UPDATE gta_edges SET bike_count = 0 WHERE bike_count != 0;
 UPDATE gta_edges SET bike_count = count
 FROM edge_counts
 WHERE ARRAY[n1,n2] = nodes;
