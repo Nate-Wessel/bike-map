@@ -18,4 +18,4 @@ build/osrm-contract osm-data/gta.osrm
 
 # create edges table
 cd ~/bike-map
-psql -d bike_map -f create-edge-table-from-osm2pgsql-data.sql
+psql -d bikemap -f create-edge-table-from-osm2pgsql-data.sql
