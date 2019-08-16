@@ -1,62 +1,40 @@
 ﻿DROP TABLE IF EXISTS gta_edges;
-WITH sub AS (
+
+WITH way_nodes AS (
 	SELECT 
-		t.id AS way_id,
-		a.node_id,
-		a.row_number,
-		t.tags::hstore -> 'highway' AS highway,
-		t.tags::hstore -> 'route' AS route, -- ferry
-		t.tags::hstore -> 'service' AS service,
-		t.tags::hstore -> 'footway' AS footway
-	FROM 
-		gta_ways AS t, 
-		unnest(t.nodes) WITH ORDINALITY a(node_id, row_number)
-	WHERE 
-		t.tags::hstore -> 'highway' IS NOT NULL OR
-		t.tags::hstore -> 'route' = 'ferry'
+		w.id AS way_id, 
+		a.node_id, 
+		a.row_number
+	FROM gta_ways AS w, unnest(w.nodes) WITH ORDINALITY a(node_id, row_number)
+	WHERE w.tags::hstore -> 'highway' IS NOT NULL
+), ordered_way_nodes AS (
+	SELECT 
+		wn.way_id, wn.node_id, wn.row_number, 
+		ST_SetSRID(ST_MakePoint( n.lon/10000000.0, n.lat/10000000.0 ),4326) AS geom
+	FROM way_nodes AS wn
+	JOIN gta_nodes AS n ON wn.node_id = n.id
 )
 SELECT 
-	s1.way_id,
-	s1.highway,
-	s1.route,
-	s1.service,
-	s1.footway,
-	ARRAY[s1.node_id,s2.node_id] AS nodes
+	n1.way_id,
+	CASE -- sort the node ID's ascending as is done in the python script
+		WHEN n1.node_id < n2.node_id THEN ARRAY[n1.node_id,n2.node_id]
+		ELSE ARRAY[n2.node_id,n1.node_id]
+	END AS nodes,
+	CASE -- note where this causes reversal of the way
+		WHEN n1.node_id < n2.node_id THEN FALSE
+		ELSE TRUE
+	END AS reversed,
+	-- temporarily empty fields
+	0::int AS bike_count,
+	ST_MakeLine(n1.geom,n2.geom) AS edge 
 INTO gta_edges
-FROM sub AS s1 JOIN sub AS s2
-	ON s1.way_id = s2.way_id AND 
-	s1.row_number = s2.row_number - 1;
+FROM ordered_way_nodes AS n1 
+JOIN ordered_way_nodes AS n2 ON 
+	n1.way_id = n2.way_id AND 
+	n1.row_number = n2.row_number - 1;
 
--- sort the node ID's ascending, as is done in the script
-UPDATE gta_edges SET nodes = ARRAY[nodes[2],nodes[1]]
-WHERE nodes[1] > nodes[2];
-CREATE INDEX ON gta_edges (nodes);
-	
--- ADD COLUMNs to be used later
-ALTER TABLE gta_edges
-	ADD COLUMN bike_count integer DEFAULT 0, 
-		
-	ADD COLUMN n1geom geometry(POINT,4326), 
-	ADD COLUMN n2geom geometry(POINT,4326),	
-	ADD COLUMN edge geometry(LINESTRING,4326), 
-	ADD COLUMN length real;
-
-UPDATE gta_edges SET n1geom = ST_SetSRID(
-	ST_MakePoint( lon/10000000.0, lat/10000000.0 ), -- lat/lon are stored as big integers
-	4326
-) FROM gta_nodes WHERE nodes[1] = id;
-UPDATE gta_edges SET n2geom = ST_SetSRID(
-	ST_MakePoint( lon/10000000.0, lat/10000000.0 ), -- lat/lon are stored as big integers
-	4326
-) FROM gta_nodes WHERE nodes[2] = id;
-UPDATE gta_edges SET edge = ST_MakeLine(n1geom,n2geom);
-UPDATE gta_edges SET length = ST_Length(edge);
-
--- save space
-ALTER TABLE gta_edges 
-	DROP COLUMN n1geom, 
-	DROP COLUMN n2geom;
 
 -- index and cluster for faster rendering
-CREATE INDEX gta_edge_idx ON gta_edges USING GIST(edge);
+CREATE INDEX gta_edge_idx ON gta_edges USING GIST(edge); -- for fast rendering
 CLUSTER gta_edges USING gta_edge_idx;
+CREATE INDEX ON gta_edges (nodes); -- for fast updating
