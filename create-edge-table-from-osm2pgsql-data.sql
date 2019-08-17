@@ -29,6 +29,8 @@ SELECT
 	w.tags::hstore -> 'footway' AS footway,
 	w.tags::hstore -> 'cycleway:left' AS "cycleway:left",
 	w.tags::hstore -> 'cycleway:right' AS "cycleway:right",
+	w.tags::hstore -> 'bicycle' AS bicycle,
+	w.tags::hstore -> 'embedded_rails' AS embedded_rails,
 	-- temporarily empty fields
 	0::int AS bike_count,
 	ST_MakeLine(n1.geom,n2.geom) AS edge 
