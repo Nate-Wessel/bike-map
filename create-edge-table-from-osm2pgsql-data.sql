@@ -9,7 +9,7 @@ WITH way_nodes AS (
 	WHERE w.tags::hstore -> 'highway' IS NOT NULL
 ), ordered_way_nodes AS (
 	SELECT 
-		wn.way_id, wn.node_id, wn.row_number, 
+		wn.way_id, wn.node_id, wn.row_number,
 		ST_SetSRID(ST_MakePoint( n.lon/10000000.0, n.lat/10000000.0 ),4326) AS geom
 	FROM way_nodes AS wn
 	JOIN gta_nodes AS n ON wn.node_id = n.id
@@ -24,6 +24,11 @@ SELECT
 		WHEN n1.node_id < n2.node_id THEN FALSE
 		ELSE TRUE
 	END AS reversed,
+	w.tags::hstore -> 'highway' AS highway,
+	w.tags::hstore -> 'cycleway' AS cycleway,
+	w.tags::hstore -> 'footway' AS footway,
+	w.tags::hstore -> 'cycleway:left' AS "cycleway:left",
+	w.tags::hstore -> 'cycleway:right' AS "cycleway:right",
 	-- temporarily empty fields
 	0::int AS bike_count,
 	ST_MakeLine(n1.geom,n2.geom) AS edge 
@@ -31,8 +36,9 @@ INTO gta_edges
 FROM ordered_way_nodes AS n1 
 JOIN ordered_way_nodes AS n2 ON 
 	n1.way_id = n2.way_id AND 
-	n1.row_number = n2.row_number - 1;
-
+	n1.row_number = n2.row_number - 1
+JOIN gta_ways AS w ON
+	w.id = n1.way_id;
 
 -- index and cluster for faster rendering
 CREATE INDEX gta_edge_idx ON gta_edges USING GIST(edge); -- for fast rendering
