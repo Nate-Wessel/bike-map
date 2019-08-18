@@ -3,13 +3,15 @@
 # it are at /usr/share/osm2pgsql/default.style
 
 
-# OsmType  Tag                   DataType   Flags
-way        cycleway              text       linear
-way        cycleway:left         text       linear
-way        cycleway:left:oneway  text linear
-way        cycleway:right        text       linear
-way        cycleway:right:oneway text linear
-way        cycleway:both         text
+# OsmType  Tag                   DataType  Flags
+way        cycleway              text      linear
+way        cycleway:left         text      linear
+way        cycleway:left:oneway  text      linear
+way        cycleway:right        text      linear
+way        cycleway:right:oneway text      linear
+way        cycleway:both         text      linear
+way        embedded_rails        text      linear
+way        embedded_rails:lanes  text      linear
 
 node,way   highway        text       linear
 way        footway        text       linear
