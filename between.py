@@ -13,10 +13,10 @@ cursor.execute("""
 		ST_Y(ST_PointN(geom4326,1)) AS oy,
 		ST_X(ST_PointN(geom4326,2)) AS dx,
 		ST_Y(ST_PointN(geom4326,2)) AS dy
-	FROM syn_bike_trips
-	--WHERE orig = 253 AND dest = 6097
+	FROM syn_all_trips
+	WHERE orig <= 625 AND dest <= 625
 	ORDER BY random()
-	LIMIT 20000;
+	LIMIT 30000;
 """)
 trips = cursor.fetchall()
 print('Starting...',len(trips),'trips')
@@ -38,7 +38,8 @@ for trip in trips:
 	Olon,Olat,Dlon,Dlat = trip
 	# craft and send the request
 	response = requests.get(
-		'http://localhost:5000/route/v1/bicycle/'+str(Olon)+','+str(Olat)+';'+str(Dlon)+','+str(Dlat),
+		'http://localhost:5000/route/v1/bicycle/'+
+		str(Olon)+','+str(Olat)+';'+str(Dlon)+','+str(Dlat),
 		params=options,
 		timeout=10 # actually takes ~5ms
 	)
