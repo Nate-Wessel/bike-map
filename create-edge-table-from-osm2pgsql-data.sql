@@ -34,6 +34,7 @@ SELECT
 	w.tags::hstore -> 'embedded_rails' AS embedded_rails,
 	-- temporarily empty fields
 	0::int AS bike_count,
+	0::int AS car_count,
 	ST_MakeLine(n1.geom,n2.geom) AS edge 
 INTO gta_edges
 FROM ordered_way_nodes AS n1 
