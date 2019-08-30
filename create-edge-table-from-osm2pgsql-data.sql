@@ -25,6 +25,7 @@ SELECT
 		ELSE TRUE
 	END AS reversed,
 	w.tags::hstore -> 'highway' AS highway,
+	w.tags::hstore -> 'name' AS name,
 	w.tags::hstore -> 'cycleway' AS cycleway,
 	w.tags::hstore -> 'footway' AS footway,
 	w.tags::hstore -> 'cycleway:left' AS "cycleway:left",
