@@ -1,8 +1,8 @@
 # from home
 cd
 
-# get new data from the overpass API
-wget -O scripts/osrm-backend/osm-data/gta.osm --post-file=bike-map/overpass-query.txt https://overpass-api.de/api/interpreter
+# get new street data from the overpass API
+wget -O scripts/osrm-backend/osm-data/gta.osm --post-file=bike-map/overpass-ways-query.txt https://overpass-api.de/api/interpreter
 
 # import it into postGIS
 osm2pgsql --slim --hstore-all --prefix gta -d bikemap --style bike-map/osm2pgsql.style scripts/osrm-backend/osm-data/gta.osm

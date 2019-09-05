@@ -8,8 +8,6 @@
 // select ways and relations of interest from within the bounding box
 (
 	way[highway];
-	way[waterway];
-	way[railway];
   	rel[type=restriction];
 	rel[route=bicycle];
 );

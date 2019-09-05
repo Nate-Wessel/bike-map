@@ -1,0 +1,17 @@
+// define a global bounding box (s,w,n,e)
+[bbox:42.8,-80.8,45.0,-77.9];
+
+// toronto plus a bit: 43.5,-80,44,-79
+// testing parkdale: 43.64,-79.44,43.65,-79.43
+// full GTHA: 42.8,-80.8,45.0,-77.9
+
+// select ways and relations of interest from within the bounding box
+(
+	way[waterway];
+	way[railway];
+);
+
+// join any children of the above ways and/or relations
+(._;>;); 
+
+out body;
