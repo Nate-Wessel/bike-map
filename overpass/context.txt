@@ -3,15 +3,37 @@
 
 // select ways and relations of interest from within the bounding box
 (
-	way[waterway];
-	rel[waterway];
-	way[railway];
-	way[leisure=park];
-	way[natural];
-	rel[natural];
-);
+	way[waterway=river];
+	way[waterway=riverbank];
+  	rel[waterway=riverbank];
 
-// join any children of the above ways and/or relations
-(._;>;); 
+  	way[natural=water];
+	rel[natural=water];
+  
+  	way[landuse=forest];
+  	way[natural=wood];
+  
+	way[railway=rail];
 
-out body;
+  	way[leisure=park];
+  	way[leisure=golf_course];
+  
+  	way[landuse=cemetery];
+)->.prefilter;
+
+// filter out data we don't want
+(
+	( // keep everything except CanVec sources
+		nwr.prefilter[!source];
+		nwr.prefilter[source!~'CanVec'];
+	);
+	-
+	( // exclude two giant lakes from the above set
+		rel[name='Lake Huron'];
+		rel[name='Lake Erie'];
+	);
+)->.filtered;
+
+(.filtered;>;); 
+
+out body qt;
