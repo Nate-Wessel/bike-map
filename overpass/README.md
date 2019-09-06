@@ -1,9 +1,6 @@
-These query definitions are means of gathering specific subsets of data from 
-OpenStreetMap using the 
-[Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL). 
+These query definitions are means of gathering specific subsets of data from OpenStreetMap using the [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL). 
 
-One is used to gather highway data and a separate one for data whch is not used 
-for routing but which may provide cartographic context. 
+One is used to gather highway data and a separate one for data which is not used for routing but which may provide cartographic context. 
 
 I've been using several bounding boxes for testing queries:
 

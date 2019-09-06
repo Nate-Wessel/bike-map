@@ -11,4 +11,4 @@
 // join any children of the above ways and relations
 (._;>;); 
 
-out body;
+out body qt;
