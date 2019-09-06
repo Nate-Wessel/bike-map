@@ -12,3 +12,4 @@ node,way   shop           text       polygon
 way        waterway       text       linear,polygon
 way        leisure        text       polygon
 way        landuse        text       polygon
+way        amenity        text       polygon

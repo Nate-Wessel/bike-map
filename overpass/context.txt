@@ -19,6 +19,12 @@
 	way[leisure=golf_course];
   
 	way[landuse=cemetery];
+
+	way[landuse=industrial];
+	way[landuse=railway];
+
+	way[amenity=university];
+	rel[amenity=university];
 )->.prefilter;
 
 // filter out data we don't want
