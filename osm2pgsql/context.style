@@ -3,10 +3,12 @@
 # it are at /usr/share/osm2pgsql/default.style
 
 
-# OsmType  Tag                   DataType  Flags
+# OsmType  Tag            DataType   Flags
 
 node,way   name           text       linear
 node,way   natural        text       polygon
 node,way   railway        text       linear
 node,way   shop           text       polygon
-way        waterway       text       polygon
+way        waterway       text       linear,polygon
+way        leisure        text       polygon
+way        landuse        text       polygon
