@@ -5,20 +5,20 @@
 (
 	way[waterway=river];
 	way[waterway=riverbank];
-  	rel[waterway=riverbank];
+	rel[waterway=riverbank];
 
-  	way[natural=water];
+	way[natural=water];
 	rel[natural=water];
   
-  	way[landuse=forest];
-  	way[natural=wood];
+	way[landuse=forest];
+	way[natural=wood];
   
 	way[railway=rail];
 
-  	way[leisure=park];
-  	way[leisure=golf_course];
+	way[leisure=park];
+	way[leisure=golf_course];
   
-  	way[landuse=cemetery];
+	way[landuse=cemetery];
 )->.prefilter;
 
 // filter out data we don't want
