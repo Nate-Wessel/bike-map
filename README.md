@@ -6,6 +6,23 @@ This project, not yet very organized, is working toward a general purpose bike m
 - Python and psycopg2
 - osm2psql
 
+## TODO ##
+There are several big domains of work that remains to be done, outlined and subdivided below. 
+
+* Map simplification
+    * Simplify split ways ([example](https://www.openstreetmap.org/#map=19/43.79249/-79.44591)) into single lines (all zoom levels)
+    * Use hierarchy in map reduction for low zoom lvels. Research needed on algorithms/techniques.
+    * Re-cluster split edges based on betweenness value and name/way contiguity. 
+    * ... 
+
+* OSM data verification and cleanup
+    * Systematically verify/survey bicycle facilities
+    * ...
+
+* Route Selection
+    * Decide on representative route-selection strategy and ensure this is instantiated in the [OSRM bike.lua profile](https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/bicycle.lua), or create such a profile.
+    * ...
+
 ## Notes to self ##
 
 Running OSRM:
