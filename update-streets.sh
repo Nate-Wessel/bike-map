@@ -12,7 +12,7 @@ psql -d bikemap -c "CREATE INDEX ON gta_nodes (id);"
 
 # process the data for OSRM-backend (but don't run that)
 cd scripts/osrm-backend
-build/osrm-extract -p profiles/bicycle.lua osm-data/gta.osm
+build/osrm-extract -p ~/bike-map/osrm-profiles/default-bicycle.lua osm-data/gta.osm
 build/osrm-contract osm-data/gta.osrm
 #build/osrm-routed osm-data/gta.osrm
 
