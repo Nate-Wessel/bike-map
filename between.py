@@ -14,9 +14,9 @@ cursor.execute("""
 		ST_X(ST_PointN(geom4326,2)) AS dx,
 		ST_Y(ST_PointN(geom4326,2)) AS dy
 	FROM syn_all_trips
-	WHERE orig <= 625 AND dest <= 625
+	--WHERE orig <= 625 AND dest <= 625
 	ORDER BY random()
-	LIMIT 30000;
+	LIMIT 100000;
 """)
 trips = cursor.fetchall()
 print('Starting...',len(trips),'trips')
