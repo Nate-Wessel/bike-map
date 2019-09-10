@@ -13,6 +13,7 @@ There are several big domains of work that remains to be done, outlined and subd
     * Simplify split ways ([example](https://www.openstreetmap.org/#map=19/43.79249/-79.44591)) into single lines (all zoom levels)
     * Use hierarchy in map reduction for low zoom lvels. Research needed on algorithms/techniques.
     * Re-cluster split edges based on betweenness value and name/way contiguity. 
+    * Smooth and resample DEM (GRASS). Alternatively convert to simplified contour polygons. 
     * ... 
 
 * OSM data verification and cleanup
