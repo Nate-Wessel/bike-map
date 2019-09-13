@@ -77,7 +77,7 @@ for trip in trips:
 		print( len(trips) - count, 'paths remaining' )
 
 # write the output
-outfile = open('nodepairs.csv','w+')
+outfile = open('data/nodepairs.csv','w+')
 outfile.write('n1,n2,count\n')
 for key,value in pairs.items():
 	n1,n2 = key.split('-')

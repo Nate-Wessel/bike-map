@@ -2,3 +2,6 @@ old-files/
 
 data/*.tif
 data/*.osm
+data/nodepairs.csv
+
+working-files/
