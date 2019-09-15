@@ -3,28 +3,20 @@
 
 // select ways and relations of interest from within the bounding box
 (
-	way[waterway=river];
-	way[waterway=riverbank];
+
+	way[waterway~'river'];
 	rel[waterway=riverbank];
-
-	way[natural=water];
+  
+	way[natural~'wood|beach|wetland|water'];
 	rel[natural=water];
-  
-	way[landuse=forest];
-	way[natural=wood];
-  
-	way[railway=rail];
 
-	way[leisure=park];
-	way[leisure=golf_course];
+	way[leisure~'^park$|golf_course'];
   
-	way[landuse=cemetery];
-
-	way[landuse=industrial];
-	way[landuse=railway];
+	way[landuse~'cemetery|industrial|railway|forest'];
 
 	way[amenity=university];
 	rel[amenity=university];
+
 )->.prefilter;
 
 // filter out data we don't want
