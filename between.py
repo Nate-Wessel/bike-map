@@ -38,7 +38,7 @@ for trip in trips:
 	Olon,Olat,Dlon,Dlat = trip
 	# craft and send the request
 	response = requests.get(
-		'http://localhost:5000/route/v1/bicycle/'+
+		'http://localhost:5000/route/v1/mode/'+
 		str(Olon)+','+str(Olat)+';'+str(Dlon)+','+str(Dlat),
 		params=options,
 		timeout=10 # actually takes ~5ms
