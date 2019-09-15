@@ -44,7 +44,6 @@ JOIN ordered_way_nodes AS n2 ON
 JOIN gta_ways AS w ON
 	w.id = n1.way_id;
 
--- index and cluster for faster rendering
+-- index for faster rendering
 CREATE INDEX gta_edge_idx ON gta_edges USING GIST(edge); -- for fast rendering
-CLUSTER gta_edges USING gta_edge_idx;
 CREATE INDEX ON gta_edges (nodes); -- for fast updating
