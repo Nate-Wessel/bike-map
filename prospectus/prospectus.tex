@@ -13,10 +13,10 @@
 \addbibresource{/home/nate/Dropbox/nates-biblio-DB.bib}
 
 \usepackage{setspace}
-\setstretch{1.25}
+\setstretch{1.24}
 
 \title{Toronto Bike Map \\ Project Prospectus}
-\author{Nate Wessel, PhD \\ \small \href{mailto:bike756@gmail.com}{bike756@gmail.com}}
+\author{Nate Wessel, PhD \\ \href{mailto:bike756@gmail.com}{bike756@gmail.com}}
 
 \begin{document}
 	\maketitle
@@ -38,7 +38,7 @@
 	
 	\section*{A Smarter Approach}
 	
-		As I used my new map for actual navigation I began to wonder if there weren't better, more elegant ways of defining connectivity from a cyclist's perspective. By mapping road width onto the width of lines on the map (See Figure \ref{fig:legend}), I had introduced a somewhat car-oriented perspective; bigger streets with more lanes for cars were generally bigger and bolder on my map, regardless of their utility for cyclists. 
+		As I used my new map for actual navigation I began to wonder if there weren't better, more elegant ways of defining connectivity from a cyclist's perspective. By mapping road width onto the width of lines on the map (See Figure \ref{fig:legend}), I had introduced a somewhat car-oriented perspective: bigger streets with more lanes for cars were generally bigger and bolder on my map, regardless of their utility for cyclists. 
 		
 		\begin{figure}[h!]
 			\centering
@@ -47,7 +47,7 @@
 			\label{fig:legend}
 		\end{figure}
 		
-		I was using data from OpenStreetMap which allows every edge and node in the street network to have mode-specific access restrictions. Indeed, several advanced trip-planning applications exist specifically to use OpenStreetMap data to help cyclists plan trips according to their preferences and limitations. I eventually discovered that I could use one of these trip planners to readily approximate a measure of \textit{betweenness centrality}. This concept, borrowed again from graph theory, essentially measures the importance of links in a network by counting the number of least-cost paths across that network in which they play a part. 
+		I was using data from OpenStreetMap which allows every edge and node in the street network to have mode-specific access restrictions. Several advanced trip-planning applications exist specifically to use OpenStreetMap data to help cyclists plan trips according to their preferences and limitations. I eventually discovered that I could use one of these trip planners to readily approximate a measure of \textit{betweenness centrality}. This concept, borrowed again from graph theory, essentially measures the importance of links in a network by counting the number of least-cost paths across that network in which they play a part. 
 		By using a realistic trip-planner to simulate a large set of bicycle trips across the street network I could thus estimate the relative importance of every street segment from a cyclist's perspective.\footnote{
 			This is very similar conceptually to the problem of traffic assignment in transport modelling, where my measure of ``importance'' is comparable to an estimate of traffic volume. Congestion however need not be taken into account and the pattern of travel demand need not be realistic. 
 		}
@@ -57,15 +57,27 @@
 		\begin{figure}[h!]
 			\centering
 			\includegraphics[width=0.45\textwidth]{spanned-gap}
-			\caption{Wright and Fern Avenues are shown to be important in connecting trips using the bike lanes on Lansdowne Avenue and The Queensway, despite the presence of a bike lane one block north on Fermanagh.}
+			\caption{Wright, Fern, and Pearson Avenues are shown to be important connectors despite their lack of {\color{red}bike lanes}.}
 			\label{fig:spanned-gap}
 		\end{figure}
 	
-		\section*{Reframing the city}
-		Our culture is often radically oriented toward automobility, and this  auto-oriented perspective is even encoded into the geospatial network data used to produce maps advocating for cyclists. Streets are universally graded into a hierarchy based on their suitability for auto travel, and these visual hierarchies, relayed to us in almost every map we see, form a familiar picture. 
+	\section*{Reenvisioning the city}
+		Our culture is often radically oriented toward automobility, and this  auto-oriented perspective is even encoded into the basic geospatial network data used to produce maps advocating for cyclists. Streets are universally graded into a hierarchy based on their suitability for auto travel\footnote{\href{https://en.wikipedia.org/wiki/Level_of_service}{https://en.wikipedia.org/wiki/Level\_of\_service}}, and these visual hierarchies, relayed to us in almost every map we see, form a familiar picture. 
 		
-		Preliminary analysis shows that the resulting visual hierarchy is substantially different from that shown on other maps of the city which are primarily oriented around auto-travel.\footnote{
-			http://natewessel.com/2017/mapping-modal-hierarchy/
-		} 
+		Preliminary analysis\footnote{
+			\href{http://natewessel.com/2017/mapping-modal-hierarchy/}{http://natewessel.com/2017/mapping-modal-hierarchy/}
+		} shows that the visual hierarchy resulting from the betweenness technique is strongly correlated with automotive level-of-service when a car-based trip-planner is used. 
+		When routing trips as a cyclist however, that correlation drops sharply, indicating that what the bike map is showing is something that largely hasn't been seen before: an objective universal approximation of \textit{bicycle} level of service. 
+	
+	\section*{To Do}
+		Much remains to be done. There is always some risk in sharing a design project before it is sufficiently compelling: old drafts of past projects circulate online and remind me how wide the gap is between conception and completion. Yet progress needs assistance. 
+		\begin{itemize}
+			\item Identify potential sources of sponsorship/grant funding. Craft a fundraising appeal. 
+			\item Determine and instantiate spatial distribution of trips, spatial trip density. How is trip distance treated?
+			\item Simplify split ways from OpenStreetMap, either in data where appropriate or in post-processing.\footnote{Split ways occur where a single street is mapped with two separate lines where the street is divided by a minor obstacle like the supports of a small bridge or a crossing island. They should be mapped as single ways for consistency with the rest of the network. See: \href{https://gist.github.com/Nate-Wessel/e7d72da7c7c12e00a472b41537334f8d}{https://gist.github.com/Nate-Wessel/e7d72da7c7c12e00a472b41537334f8d}}
+			\item Print map? Web map? Or both? Major simplification needed for lower zooms of a web map.
+			\item Read OSRM's \href{https://github.com/Project-OSRM/osrm-backend/blob/82b5648c97edf1d2edec7aecebc35aa8a8033c82/profiles/bicycle.lua}{\texttt{bicycle.lua}} routing profile, understanding all that it does. 
+			\item Test revealed hierarchies against local cyclist knowledge. 
+		\end{itemize}
 	
 \end{document}
