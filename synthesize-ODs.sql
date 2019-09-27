@@ -4,10 +4,10 @@ DROP TABLE IF EXISTS syn_points;
 
 SELECT 
 	osm_id,
-	ST_LineInterpolatePoint(way,random()) AS geom,
-	generate_series(1,(ST_Length(way::geography)/100)::int+1) AS way_uid
+	ST_Transform(ST_LineInterpolatePoint(way,random()),4326)::geography AS geog,
+	generate_series(1,(ST_Length(ST_Transform(way,4326)::geography)/100)::int+1) AS way_uid
 INTO syn_points
 FROM gta_line
 WHERE highway IN ('primary','secondary','tertiary','residential','unclassified','path','cycleway');
 
-CREATE INDEX ON syn_points USING GIST (geom);
+CREATE INDEX ON syn_points USING GIST (geog);
