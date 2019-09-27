@@ -10,4 +10,6 @@ INTO syn_ods
 FROM gta_line
 WHERE highway IN ('primary','secondary','tertiary','residential','unclassified','path','cycleway');
 
+ALTER TABLE syn_ods ADD COLUMN uid serial PRIMARY KEY;
+
 CREATE INDEX ON syn_ods USING GIST (geog);
