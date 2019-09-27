@@ -29,13 +29,8 @@ mv osm-data/gta-bike.osm osm-data/gta-car.osm
 build/osrm-extract -p profiles/car.lua osm-data/gta-car.osm
 build/osrm-contract osm-data/gta-car.osrm
 
-# reuse the same data with the foot profile
-mv osm-data/gta-car.osm osm-data/gta-foot.osm
-build/osrm-extract -p profiles/foot.lua osm-data/gta-foot.osm
-build/osrm-contract osm-data/gta-foot.osrm
-
 # this is not needed for routing
-rm osm-data/gta-foot.osm
+rm osm-data/gta-car.osm
 
 # return to original folder
 cd ~/bike-map
