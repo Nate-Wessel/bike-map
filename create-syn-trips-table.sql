@@ -19,7 +19,7 @@ WITH sub AS (
 	FROM syn_trips AS t
 	JOIN syn_ods AS o ON t.o_uid = o.uid
 	JOIN syn_ods AS d ON t.d_uid = d.uid
-	WHERE syn_trips.geom IS NULL
+	WHERE t.geom IS NULL
 )
 UPDATE syn_trips SET geom = sub.geom 
 FROM sub 

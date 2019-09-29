@@ -71,7 +71,7 @@ pli = 0 # points list index
 p_len = len(points)
 shuffle(points)
 # for each of a given number of trips to generate
-for i in range(1,100000):
+for i in range(1,50000):
 	trip_accepted = False 
 	o = points[pli]
 	pli += 1 
@@ -83,9 +83,9 @@ for i in range(1,100000):
 			pli = 0
 			shuffle(points)
 		d = points[pli]
-		if euc_dist(o,d) > 7000: continue
+		if euc_dist(o,d) > 10000: continue
 		ndist = net_dist(o,d)
-		if ndist > 7000: continue
+		if ndist > 10000: continue
 		# conditions passed - accept trip
 		trip_accepted = True
 		pli += 1 # increment fr the next iteration
