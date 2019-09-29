@@ -47,3 +47,5 @@ JOIN gta_ways AS w ON
 -- index for faster rendering
 CREATE INDEX gta_edge_idx ON gta_edges USING GIST(edge); -- for fast rendering
 CREATE INDEX ON gta_edges (nodes); -- for fast updating
+-- faster rendering in QGIS, etc
+CLUSTER gta_edges USING gta_edge_idx;
