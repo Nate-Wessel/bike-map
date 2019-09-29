@@ -9,14 +9,11 @@ cursor = conn.cursor()
 print("Getting trips")
 cursor.execute("""
 	SELECT 
-		ST_X(ST_PointN(geom4326,1)) AS ox,
-		ST_Y(ST_PointN(geom4326,1)) AS oy,
-		ST_X(ST_PointN(geom4326,2)) AS dx,
-		ST_Y(ST_PointN(geom4326,2)) AS dy
-	FROM syn_all_trips
-	--WHERE orig <= 625 AND dest <= 625
-	ORDER BY random()
-	LIMIT 100000;
+		ST_X(ST_PointN(geom,1)) AS ox,
+		ST_Y(ST_PointN(geom,1)) AS oy,
+		ST_X(ST_PointN(geom,2)) AS dx,
+		ST_Y(ST_PointN(geom,2)) AS dy
+	FROM syn_trips;
 """)
 trips = cursor.fetchall()
 print('Starting...',len(trips),'trips')
