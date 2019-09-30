@@ -9,6 +9,7 @@
   
 	way[natural~'wood|beach|wetland|water'];
 	rel[natural=water];
+	node[natural=tree];
 
 	way[leisure~'^park$|golf_course'];
   
@@ -16,6 +17,8 @@
 
 	way[amenity=university];
 	rel[amenity=university];
+
+	rel[route=train][operator='GO Transit'];
 
 )->.prefilter;
 
