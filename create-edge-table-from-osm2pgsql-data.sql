@@ -16,14 +16,8 @@ WITH way_nodes AS (
 )
 SELECT 
 	n1.way_id,
-	CASE -- sort the node ID's ascending as is done in the python script
-		WHEN n1.node_id < n2.node_id THEN ARRAY[n1.node_id,n2.node_id]
-		ELSE ARRAY[n2.node_id,n1.node_id]
-	END AS nodes,
-	CASE -- note where this causes reversal of the way
-		WHEN n1.node_id < n2.node_id THEN FALSE
-		ELSE TRUE
-	END AS reversed,
+	n1.node_id AS node_1,
+	n2.node_id AS node_2,
 	w.tags::hstore -> 'highway' AS highway,
 	w.tags::hstore -> 'name' AS name,
 	w.tags::hstore -> 'cycleway' AS cycleway,
@@ -31,10 +25,11 @@ SELECT
 	w.tags::hstore -> 'cycleway:left' AS "cycleway:left",
 	w.tags::hstore -> 'cycleway:right' AS "cycleway:right",
 	w.tags::hstore -> 'bicycle' AS bicycle,
-	w.tags::hstore -> 'embedded_rails' AS embedded_rails,
+	w.tags::hstore -> 'oneway' AS oneway,
 	-- temporarily empty fields
-	0::int AS bike_count,
-	0::int AS car_count,
+	0::int AS f,
+	0::int AS r,
+	-- geometry
 	ST_MakeLine(n1.geom,n2.geom) AS edge 
 INTO gta_edges
 FROM ordered_way_nodes AS n1 
@@ -44,8 +39,10 @@ JOIN ordered_way_nodes AS n2 ON
 JOIN gta_ways AS w ON
 	w.id = n1.way_id;
 
--- index for faster rendering
+-- index and cluster for faster rendering
 CREATE INDEX gta_edge_idx ON gta_edges USING GIST(edge); -- for fast rendering
-CREATE INDEX ON gta_edges (nodes); -- for fast updating
--- faster rendering in QGIS, etc
 CLUSTER gta_edges USING gta_edge_idx;
+-- for faster updating
+CREATE INDEX ON gta_edges (node_1);
+CREATE INDEX ON gta_edges (node_2);
+

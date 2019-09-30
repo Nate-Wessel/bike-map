@@ -1,17 +1,20 @@
 ﻿-- create temporary table with edge counts from python script
-DROP TABLE IF EXISTS edge_counts;
-CREATE TABLE edge_counts (
-	n1 bigint,
-	n2 bigint,
-	count integer
+CREATE TEMP TABLE edge_counts (
+	node_a bigint,
+	node_b bigint,
+	from_a smallint,
+	from_b smallint
 );
-COPY edge_counts (n1,n2,count) 
+COPY edge_counts (node_a,node_b,from_a,from_b) 
 FROM '/home/nate/bike-map/data/nodepairs.csv' CSV HEADER;
 
-UPDATE gta_edges SET bike_count = 0 WHERE bike_count != 0;
-UPDATE gta_edges SET bike_count = count
-FROM edge_counts
-WHERE ARRAY[n1,n2] = nodes;
+UPDATE gta_edges SET f = 0 WHERE f != 0;
+UPDATE gta_edges SET r = 0 WHERE r != 0;
 
--- drop the temp table
-DROP TABLE edge_counts;
+UPDATE gta_edges SET f = from_a, r = from_b
+FROM edge_counts
+WHERE node_1 = node_a AND node_2 = node_b;
+
+UPDATE gta_edges SET r = from_a, f = from_b
+FROM edge_counts
+WHERE node_1 = node_b AND node_2 = node_a;

@@ -12,8 +12,10 @@ cursor.execute("""
 		ST_X(ST_PointN(geom,1)) AS ox,
 		ST_Y(ST_PointN(geom,1)) AS oy,
 		ST_X(ST_PointN(geom,2)) AS dx,
-		ST_Y(ST_PointN(geom,2)) AS dy
-	FROM syn_trips;
+		ST_Y(ST_PointN(geom,2)) AS dy,
+		row_number() OVER () AS row
+	FROM syn_trips
+	--LIMIT 500;
 """)
 trips = cursor.fetchall()
 print('Starting...',len(trips),'trips')
@@ -27,12 +29,20 @@ options = {
 }
 
 # dict of edge counts keyed by osm id pairs, ascending order
-pairs = {}
+edges = {}
 
-count = 0
+def add_edge(node1,node2):
+	global edges
+	# key by unique node pairs
+	key = '{}-{}'.format(n1,n2) if n1 < n2 else '{}-{}'.format(n2,n1)
+	# increment the count
+	if key not in edges:
+		edges[key] = {n1:1,n2:0}
+	else:
+		edges[key][n1] += 1
 
 for trip in trips:
-	Olon,Olat,Dlon,Dlat = trip
+	Olon,Olat,Dlon,Dlat,row = trip
 	# craft and send the request
 	response = requests.get(
 		'http://localhost:5000/route/v1/mode/'+
@@ -45,10 +55,6 @@ for trip in trips:
 	if j['code'] != 'Ok':
 		print(response.text,'\n')
 		continue
-	# check that the trip isn't too long (e.g. opposite side of a river)	
-	# or too short
-	network_distance = j['routes'][0]['distance']
-	#print(network_distance)
 	# get the nodelist
 	nodes = j['routes'][0]['legs'][0]['annotation']['nodes']
 
@@ -56,28 +62,17 @@ for trip in trips:
 	n1 = nodes[0]
 	for i in range(1,len(nodes)):
 		n2 = nodes[i]
-		# order the nodes consistently
-		if n1 < n2:
-			key = str(n1)+'-'+str(n2)
-		else: 
-			key = str(n2)+'-'+str(n1)
-		# increment the count
-		if key not in pairs:
-			pairs[key] = 1
-		else:
-			pairs[key] += 1
+		add_edge(n1,n2)
 		# set for next iteration
 		n1 = n2
-
-	count += 1
-	if count % 10 == 0:
-		print( len(trips) - count, 'paths remaining' )
+	if row % 100 == 0:
+		print( len(trips) - row, 'paths remaining' )
 
 # write the output
 outfile = open('data/nodepairs.csv','w+')
-outfile.write('n1,n2,count\n')
-for key,value in pairs.items():
-	n1,n2 = key.split('-')
-	outfile.write(n1+','+n2+','+str(value)+'\n')
+outfile.write('nodeA,nodeB,fromA,fromB\n')
+for i,edge in edges.items():
+	n = list(edge.keys())
+	outfile.write( '{},{},{},{}\n'.format(n[0],n[1],edge[n[0]],edge[n[1]]) )
 outfile.close()
 
