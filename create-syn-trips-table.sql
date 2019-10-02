@@ -5,7 +5,7 @@ CREATE TABLE syn_trips (
 	o_uid integer,
 	d_uid integer,
 	dist real,
-	ADD COLUMN geom geometry(LINESTRING,4326)
+	COLUMN geom geometry(LINESTRING,4326)
 );
 */
 
