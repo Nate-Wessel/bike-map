@@ -5,7 +5,7 @@ CREATE TABLE syn_trips (
 	o_uid integer,
 	d_uid integer,
 	dist real,
-	COLUMN geom geometry(LINESTRING,4326)
+	geom geometry(LINESTRING,4326)
 );
 */
 
@@ -15,7 +15,7 @@ FROM '/home/nate/bike-map/data/syn-trips.csv' CSV HEADER;
 WITH sub AS (
 	SELECT 
 		t.uid,
-		ST_MakeLine(o.geog::geometry,d.geog::geometry) AS geom
+		ST_Transform(ST_MakeLine(o.geom,d.geom),4326) AS geom
 	FROM syn_trips AS t
 	JOIN syn_ods AS o ON t.o_uid = o.uid
 	JOIN syn_ods AS d ON t.d_uid = d.uid
