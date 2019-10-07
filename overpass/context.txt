@@ -18,7 +18,10 @@
 	way[amenity=university];
 	rel[amenity=university];
 
-	rel[route=train][operator='GO Transit'];
+	rel[route=train][operator~'GO Transit|Union Pearson Express'];
+
+	way[aeroway~'runway|aerodrome|taxiway|terminal'];
+	rel[aeroway=aerodrome];
 
 )->.prefilter;
 

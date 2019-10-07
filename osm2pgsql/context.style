@@ -13,3 +13,4 @@ way        waterway       text       linear,polygon
 way        leisure        text       polygon
 way        landuse        text       polygon
 way        amenity        text       polygon
+way        aeroway        text       linear,polygon
