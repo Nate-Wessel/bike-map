@@ -21,7 +21,7 @@
 	rel[route=train][operator~'GO Transit|Union Pearson Express'];
 
 	way[aeroway~'runway|aerodrome|taxiway|terminal'];
-	rel[aeroway=aerodrome];
+	rel[aeroway~'aerodrome|terminal'];
 
 )->.prefilter;
 
