@@ -31,7 +31,7 @@ def net_dist(p1,p2):
 		'http://localhost:5000/route/v1/bicycle/'+
 		str(p1['geom'].x)+','+str(p1['geom'].y)+';'+
 		str(p2['geom'].x)+','+str(p2['geom'].y),
-		params=options, timeout=1
+		params=options, timeout=10
 	)
 	j = json.loads(response.text)
 	if j['code'] != 'Ok':
@@ -41,7 +41,7 @@ def net_dist(p1,p2):
 	return j['routes'][0]['distance']
 
 # connect to the DB
-conn_string = ("host='localhost' dbname='bikemap' user='postgres' password='mink'")
+conn_string = ("host='localhost' dbname='bikemap' user='nate' password='mink'")
 conn = psycopg2.connect(conn_string)
 cursor1 = conn.cursor()
 conn.autocommit = True
@@ -71,7 +71,7 @@ pli = 0 # points list index
 p_len = len(points)
 shuffle(points)
 # for each of a given number of trips to generate
-for i in range(1,4000):
+for i in range(1,100000):
 	trip_accepted = False 
 	o = points[pli]
 	pli += 1 

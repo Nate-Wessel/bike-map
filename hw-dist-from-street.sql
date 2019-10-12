@@ -1,6 +1,6 @@
 ﻿--ALTER TABLE street_edges ADD COLUMN uid serial
 
-UPDATE temp_hw_edges SET dist = 1000 WHERE dist != 1000;
+--UPDATE temp_hw_edges SET dist = 1000 WHERE dist != 1000;
 
 WITH RECURSIVE min_dist(uid,n1,n2,dist) AS (
 	SELECT DISTINCT hw.uid, hw.node_1 AS n1, hw.node_2 AS n2, ST_Length(hw.edge::geography) AS dist 
