@@ -71,7 +71,7 @@ pli = 0 # points list index
 p_len = len(points)
 shuffle(points)
 # for each of a given number of trips to generate
-for i in range(1,4000):
+for i in range(1,40000):
 	trip_accepted = False 
 	o = points[pli]
 	pli += 1 
