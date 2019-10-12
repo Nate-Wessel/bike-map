@@ -23,6 +23,9 @@
 	way[aeroway~'runway|aerodrome|taxiway|terminal'];
 	rel[aeroway~'aerodrome|terminal'];
 
+	nwr[shop=bicycle];
+	nwr[amenity=bicycle_rental];
+
 )->.prefilter;
 
 // filter out data we don't want

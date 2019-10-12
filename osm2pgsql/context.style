@@ -5,12 +5,13 @@
 
 # OsmType  Tag            DataType   Flags
 
-node,way   name           text       linear
+node,way   name           text       
 node,way   natural        text       polygon
 node,way   railway        text       linear
-node,way   shop           text       polygon
+node,way   shop           text       
+node,war   operator       text       
 way        waterway       text       linear,polygon
-way        leisure        text       polygon
+way        leisure        text       
 way        landuse        text       polygon
-way        amenity        text       polygon
+node,way   amenity        text       linear,polygon
 way        aeroway        text       linear,polygon
