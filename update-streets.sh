@@ -21,13 +21,8 @@ build/osrm-extract -p ~/bike-map/osrm-profiles/default-bicycle.lua osm-data/bike
 build/osrm-contract osm-data/bike.osrm
 #build/osrm-routed osm-data/bike.osrm
 
-# reuse the same data with the car profile
-mv osm-data/bike.osm osm-data/car.osm
-build/osrm-extract -p profiles/car.lua osm-data/car.osm
-build/osrm-contract osm-data/car.osrm
-
 # this is not needed for routing
-rm osm-data/car.osm
+rm osm-data/bike.osm
 
 # return to original folder
 cd ~/bike-map
