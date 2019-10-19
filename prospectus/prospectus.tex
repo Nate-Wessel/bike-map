@@ -16,7 +16,7 @@
 \setstretch{1.24}
 
 \title{Toronto Bike Map \\ Project Prospectus}
-\author{Nate Wessel, PhD \\ \href{mailto:bike756@gmail.com}{bike756@gmail.com}}
+\author{Nate Wessel, PhD \\ \href{mailto:nate@natewessel.com}{Nate@NateWessel.com}}
 
 \begin{document}
 	\maketitle
@@ -27,7 +27,7 @@
 	Second, the base-map forming the context in which these items are displayed is fundamentally a map designed for cars; streets which have many cars are shown more prominently regardless of their utility to cyclists. Though subtle, the effect of this is to reinforce a car-centered view of the city and to background streets which may be well used by cyclists, yet not officially designated for that purpose. Finally, most streets on such maps, if they don't contain a bike lane etc. convey no information at all which is useful to cyclists in particular. 
 	
 	\section*{Background}
-		I have been thinking about bike maps for several years now and in 2014 I made one. 
+		In 2014 I made a bike map. 
 		I was living in Cincinnati, Ohio and had grown frustrated with the maps I could find to help me navigate by bike. One map in particular, produced and printed by our regional planning authority, struck me as especially unlovely and even condescending in the way it classified streets subjectively and without any clear standards as ``good'' or ``bad'' for cyclists. 
 		
 		I had some experience already with print cartography and my idea was that a bike map should be thoroughly \textit{objective} and that it also needed to show much more than just the disjunct and miscellaneous bike lanes, cycletracks, and suggested routes of other maps. I classified every single street according to its lane count and speed limit, highlighting those with restricted auto access and lightly emphasizing bike facilities where they existed (See Figure~\ref{fig:legend}). 
@@ -45,7 +45,7 @@
 		} This greatly reduced visual noise in some areas and helped the eye to follow through-streets where they existed.
 		This cycling-specific measure of network connectivity ended up rather dramatically improving the readability of the map. 
 		
-		I eventually printed and distributed the map (9,000 paper copies and online) with the help of a local foundation and several generous sponsors. The project is described in much greater detail in an article in Cartographic Perspectives which is available online.\footnote{\fullcite{Wessel2015}}
+		I eventually printed and distributed the map with the help of a local foundation and several generous sponsors. The project is described in much greater detail in an article in Cartographic Perspectives which is available online.\footnote{\fullcite{Wessel2015}}
 	
 	\section*{Lessons learned}
 		Over the next year or so as I used my new map more and more for actual navigation, I began to wonder if there weren't a better way of doing things. By mapping road width onto the width of lines on the map (See Figure \ref{fig:legend}), I had retained something of the standard car-centric perspective: bigger streets with more lanes for cars were generally bigger and bolder on my map, regardless of their utility for cyclists. The algorithm I used to find dead-ends had some annoying limitations as well.
@@ -56,26 +56,20 @@
 		The results I produced were extremely interesting though life quickly got in the way of my progress: I graduated, moved to Toronto, and got too distracted by other work.
 		
 	\section*{A bike map for Toronto}
-		The basic idea for this map has been simmering for several years now. I want to map a measure of usefulness or \textit{betweenness} onto the visual hierarchy of streets on the map. Bigger bolder lines will be streets that are more `useful' for cyclists, streets that would be used for more trips by bike. The measure will be influenced surely by the presence of bike lanes for example, but these won't be the only factor. It also matters where a street is in the broader network and what it connects. Bike lanes to nowhere will not distract us, and critical connections on unmarked service roads will stand out like they should. 
+		The basic idea for this map has been simmering for several years now. I want to map a measure of usefulness or \textit{betweenness} onto the visual hierarchy of streets on the map. Bigger bolder lines will be streets that are more `useful' for cyclists, streets that would tend to be used for more bike trips. The measure will be influenced by the presence of bike lanes etc. but these won't be the only factor. It also matters where a street is in the broader network and what it connects. Bike lanes to nowhere should not distract us, and critical connections on unmarked service roads will stand out like they should. 
 		
 		For example if we have a street with a long, useful bike lane, but that lane has gaps and discontinuities, we may see that the segments connecting the portions with bike lanes are just as important to the cyclist because the street \textit{as a whole} serves a useful role in the network. 
 		Presenting a continuous visual hierarchy to the reader should make the network easier to read, navigate, and remember.\footnote{
 			This is a supposition which I nearly examined empirically as the topic of my dissertation research - I even developed software for the user study though ultimately took my research in a different direction.
-		} 
-		
-		The map on the next page illustrates this more clearly. 
-		
-		This is illustrated in Figure \ref{fig:spanned-gap} where the algorithm picks up an important connection between the bike lanes on Lansdowne Avenue and The Queensway. 
-		
-		\begin{figure}[h!]
-			\centering
-			\includegraphics[width=0.45\textwidth]{spanned-gap}
-			\caption{Wright, Fern, and Pearson Avenues are shown to be important connectors despite their lack of {\color{red}bike lanes}.}
-			\label{fig:spanned-gap}
-		\end{figure}
+		}
+		The prototype map on the next page illustrates this more clearly. 
 	
 	\section*{What remains to be done}
-		A prototype of the map is complete - a proof of concept. In order to produce a high-quality finished map, I need funding to complete the work.
-		There is a great deal of manual data cleaning, surveying and verification that must happen to ensure quality. I need to fully localize the bicycle trip simulation to the particulars of Toronto. I need to create and apply a cartographic simplification and generalization algorithm to the input data. I need to engage local cyclists to validate the map against their experiences. Finally, I need to produce a complete print layout, find a printer, and produce and help to distribute thousands of maps in person and online. 
+		I have much of the code and data already in hand - enough to make a functional proof of concept. In order to produce a high-quality finished map though I need funding to complete the work.
+		Some money would go directly to printing costs, but the greater portion would pay for my time.
+		
+		There is a great deal of manual data cleaning, updating, surveying and verification that must be done to ensure quality. I need to fully localize the bicycle trip simulation to the particulars of Toronto. I need to create and apply a cartographic simplification and generalization algorithm to the input data, and likely do a great deal of manual cleanup as well. I need to engage local cyclists to validate the map against their experiences. Finally, I need to produce a complete print layout, find a printer, and produce and distribute thousands of maps in person and online. My estimate is that this work would take about three to four months of sustained effort. 
+		
+		
 	
 \end{document}
