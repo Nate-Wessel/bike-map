@@ -6,7 +6,9 @@ WITH way_nodes AS (
 		a.node_id, 
 		a.row_number
 	FROM street_ways AS w, unnest(w.nodes) WITH ORDINALITY a(node_id, row_number)
-	WHERE w.tags::hstore -> 'highway' IS NOT NULL
+	WHERE 
+		w.tags::hstore -> 'highway' IS NOT NULL AND
+		w.tags::hstore -> 'area' IS NULL
 ), ordered_way_nodes AS (
 	SELECT 
 		wn.way_id, wn.node_id, wn.row_number,
