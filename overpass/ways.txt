@@ -10,11 +10,11 @@ rel(324211); map_to_area->.TOarea;
 	way[highway];
   	rel[type=restriction];
 	rel[route=bicycle];
-);
+)->.streets;
 
 ( // clip anything not in or around Toronto
-	nwr(area.TOarea);    // in
-	nwr(around.TO:5000); // around
+	nwr.streets(area.TOarea);    // in
+	nwr.streets(around.TO:5000); // around
 );
 
 // join any children of the above ways and relations
