@@ -1,6 +1,11 @@
 // define a global bounding box (s,w,n,e)
 [bbox:43.5,-79.7,43.9,-79.0];
 
+// Toronto (city) by id for clipping the data later
+rel(324211)->.TO;
+rel(324211); map_to_area->.TOarea;
+
+
 // select ways and relations of interest from within the bounding box
 (
 
@@ -27,7 +32,7 @@
 	nwr[shop=bicycle];
 	nwr[amenity=bicycle_rental];
 
-	rel(324211); // City of Toronto
+	.TO; // the city relation itself
 
 )->.prefilter;
 
@@ -44,6 +49,11 @@
 	);
 )->.filtered;
 
-(.filtered;>;); 
+( // clip to anything in or around Toronto
+	nwr.filtered(area.TOarea);    // in
+	nwr.filtered(around.TO:5000); // around
+)->.clipped;
+
+(.clipped;>;); 
 
 out body qt;

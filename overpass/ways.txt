@@ -1,11 +1,20 @@
 // define a global bounding box (s,w,n,e)
 [bbox:43.5,-79.7,43.9,-79.0];
 
+// Toronto (city) by id for clipping the data
+rel(324211)->.TO;
+rel(324211); map_to_area->.TOarea;
+
 // select ways and relations of interest from within the bounding box
 (
 	way[highway];
   	rel[type=restriction];
 	rel[route=bicycle];
+);
+
+( // clip anything not in or around Toronto
+	nwr(area.TOarea);    // in
+	nwr(around.TO:5000); // around
 );
 
 // join any children of the above ways and relations
