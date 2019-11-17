@@ -50,9 +50,7 @@ conn.autocommit = True
 print("Getting points")
 cursor1.execute("""
 	SELECT uid, ST_Transform(geom,4326), geom
-	FROM syn_ods 
-	--ORDER BY random() 
-	--LIMIT 100000;
+	FROM syn_ods;
 """)
 points = [
 	{
@@ -71,7 +69,7 @@ pli = 0 # points list index
 p_len = len(points)
 shuffle(points)
 # for each of a given number of trips to generate
-for i in range(1,100000):
+for i in range(1,150000):
 	trip_accepted = False 
 	o = points[pli]
 	pli += 1 

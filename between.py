@@ -14,8 +14,7 @@ cursor.execute("""
 		ST_X(ST_PointN(geom,2)) AS dx,
 		ST_Y(ST_PointN(geom,2)) AS dy,
 		row_number() OVER () AS row
-	FROM syn_trips
-	--LIMIT 500;
+	FROM syn_trips;
 """)
 trips = cursor.fetchall()
 print('Starting...',len(trips),'trips')
@@ -45,7 +44,7 @@ for trip in trips:
 	Olon,Olat,Dlon,Dlat,row = trip
 	# craft and send the request
 	response = requests.get(
-		'http://localhost:5000/route/v1/mode/'+
+		'http://localhost:5000/route/v1/bicycle/'+
 		str(Olon)+','+str(Olat)+';'+str(Dlon)+','+str(Dlat),
 		params=options,
 		timeout=10 # actually takes ~5ms
