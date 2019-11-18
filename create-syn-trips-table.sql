@@ -1,5 +1,4 @@
-﻿--DROP TABLE IF EXISTS syn_trips;
-/*
+﻿DROP TABLE IF EXISTS syn_trips;
 CREATE TABLE syn_trips (
 	uid serial PRIMARY KEY,
 	o_uid integer,
@@ -7,7 +6,6 @@ CREATE TABLE syn_trips (
 	dist real,
 	geom geometry(LINESTRING,4326)
 );
-*/
 
 COPY syn_trips (o_uid,d_uid,dist) 
 FROM '/home/nate/bike-map/data/syn-trips.csv' CSV HEADER;
