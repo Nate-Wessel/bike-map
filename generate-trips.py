@@ -1,3 +1,7 @@
+# This script generates a sample of O->D trips between a set of input points
+# such that the length of the OD trips is limited to a reasonable distance
+
+# GOAL FOR THIS SCRIPT IS THE FOLLOWING:
 # from a large set of semi-random origin points, link up points into OD trip 
 # pairs such that the distribution of network distances is characteristic of 
 # TTS bike travel 
@@ -7,11 +11,7 @@
 # sample points from list two at a time
 # do a quick euclidean distance check to remove very long trips quickly
 # measure network distance with OSRM
-# measure gaussian KDE at distance - if the current output KDE is lower at that point than the sample, include the trip in the output. Then remove those two points from the input set and iterate. 
-
-
-# define list of trips to output 
-# define list of sampled trip lengths from TTS
+# measure gaussian KDE at distance - if the current output KDE is lower at that point than the sample, include the trip in the output. Then remove those two points from the input set and iterate.
 
 import psycopg2, requests, json
 from random import sample, shuffle
@@ -61,32 +61,39 @@ points = [
 	for uid, geomWKB, local_geomWKB in cursor1.fetchall()
 ]
 
+shuffle(points)
+pli = 0 # points list index
+p_len = len(points)
+
+def random_point():
+	"""return a random point from the list. this is simply the next point since
+	the list is kept in random order. reshuffle the list after making it through 
+	once."""	
+	global points, pli
+	if pli < p_len-1: 
+		point = points[pli]
+		pli += 1 
+	else: 
+		point = points[pli]
+		pli = 0
+		shuffle(points)
+	return point
+
 # open an output file
 out = open('data/syn-trips.csv','w+')
 out.write('o,d,dist')
 
-pli = 0 # points list index
-p_len = len(points)
-shuffle(points)
 # for each of a given number of trips to generate
 for i in range(1,150000):
 	trip_accepted = False 
-	o = points[pli]
-	pli += 1 
+	o = random_point()
 	while not trip_accepted:
-		if pli < p_len-1: 
-			pli += 1 # increment our way through the list
-		else: 
-			print('made it through the damn list')
-			pli = 0
-			shuffle(points)
-		d = points[pli]
+		d = random_point()
 		if euc_dist(o,d) > 10000: continue
 		ndist = net_dist(o,d)
 		if ndist > 10000: continue
 		# conditions passed - accept trip
 		trip_accepted = True
-		pli += 1 # increment fr the next iteration
 	# now we have a couple of random points with tolerable distances
 	out.write('\n{},{},{}'.format(o['uid'], d['uid'], ndist/1000))
 	print( i )
@@ -94,10 +101,3 @@ for i in range(1,150000):
 #def gaussian(x,bandwidth):
 #	"""height of the gaussian distribution at distance x from mean with bw"""
 #	return exp(-(x**2 / (2 * bandwidth**2)))
-
-
-
-
-
-
-
