@@ -19,7 +19,7 @@ rel(324211); map_to_area->.TOarea;
 	way[leisure~'^park$|golf_course'];
 	rel[leisure~'^park$|golf_course'];
   
-	way[landuse~'cemetery|industrial|railway|forest'];
+	way[landuse~'cemetery|industrial|railway|forest|retail'];
 
 	way[amenity=university];
 	rel[amenity=university];
