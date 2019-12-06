@@ -9,7 +9,7 @@ CREATE TABLE syn_trips (
 );
 
 COPY syn_trips (o_uid,d_uid,dist) 
-FROM '/home/nate/bike-map/data/syn-trips.csv' CSV HEADER;
+FROM '/home/nate/bike-map/demand/data/syn-trips.csv' CSV HEADER;
 
 WITH sub AS (
 	SELECT 

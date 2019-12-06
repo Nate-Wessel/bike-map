@@ -84,7 +84,7 @@ out = open('data/syn-trips.csv','w+')
 out.write('o,d,dist')
 
 # for each of a given number of trips to generate
-for i in range(1,150000):
+for i in range(1,50000):
 	trip_accepted = False 
 	o = random_point()
 	while not trip_accepted:
