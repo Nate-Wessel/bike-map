@@ -19,10 +19,23 @@ cd ~/scripts/osrm-backend
 # process OSRM for the bike profile
 build/osrm-extract -p ~/bike-map/osrm-profiles/default-bicycle.lua osm-data/bike.osm
 build/osrm-contract osm-data/bike.osrm
-#build/osrm-routed osm-data/bike.osrm
-
 # this is not needed for routing
 rm osm-data/bike.osm
+# run the server in the background and be ready to kill it later
+build/osrm-routed osm-data/bike.osrm & 
+OSRMserverPID=$!
 
 # return to original folder
 cd ~/bike-map
+
+# synthesize travel demand
+psql -d bikemap -f demand/generate-ODs.sql
+python3 demand/generate-trips.py # needs OSRM to be running
+psql -d bikemap -f demand/create-trips-table.sql
+
+# generate betweenness measures and add counts to edges
+python3 between.py
+psql -d bikemap -f update-edge-bike-counts.sql
+
+# we can now kill the server
+kill $OSRMserverPID
