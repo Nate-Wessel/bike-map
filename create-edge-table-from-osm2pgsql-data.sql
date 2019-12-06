@@ -32,7 +32,7 @@ SELECT
 	0::int AS f, -- forward count
 	0::int AS r, -- reverse count
 	-- geometry
-	ST_SetSRID(ST_MakeLine(n1.geom,n2.geom),4326) AS edge
+	ST_Transform(ST_MakeLine(n1.geom,n2.geom),3857) AS edge
 INTO street_edges
 FROM ordered_way_nodes AS n1 
 JOIN ordered_way_nodes AS n2 ON 
@@ -41,10 +41,10 @@ JOIN ordered_way_nodes AS n2 ON
 JOIN street_ways AS w ON
 	w.id = n1.way_id;
 
--- index and cluster for faster rendering
-CREATE INDEX street_edge_idx ON street_edges USING GIST(edge); -- for fast rendering
-CLUSTER street_edges USING street_edge_idx;
--- for faster updating
+ALTER TABLE street_edges ADD COLUMN edge_uid serial PRIMARY KEY;
+
+-- index for faster updates and rendering
+CREATE INDEX ON street_edges USING GIST(edge);
 CREATE INDEX ON street_edges (node_1);
 CREATE INDEX ON street_edges (node_2);
 
