@@ -11,17 +11,17 @@ osm2pgsql --slim --hstore-all --prefix street -d bikemap --style osm2pgsql/ways.
 # create edges table
 psql -d bikemap -f create-edge-table-from-osm2pgsql-data.sql
 
-# process the data for OSRM-backend (but don't run that)
+# process the data for OSRM-backend
 mkdir ~/scripts/osrm-backend/osm-data
 cp data/streets.osm ~/scripts/osrm-backend/osm-data/bike.osm
 
 cd ~/scripts/osrm-backend
-# process OSRM for the bike profile
+
 build/osrm-extract -p ~/bike-map/osrm-profiles/default-bicycle.lua osm-data/bike.osm
 build/osrm-contract osm-data/bike.osrm
 # this is not needed for routing
 rm osm-data/bike.osm
-# run the server in the background and be ready to kill it later
+# run the server in the background but be ready to kill it later
 build/osrm-routed osm-data/bike.osrm & 
 OSRMserverPID=$!
 
