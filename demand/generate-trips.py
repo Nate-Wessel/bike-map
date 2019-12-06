@@ -80,7 +80,7 @@ def random_point():
 	return point
 
 # open an output file
-out = open('data/syn-trips.csv','w+')
+out = open('/home/nate/bike-map/demand/data/syn-trips.csv','w+')
 out.write('o,d,dist')
 
 # for each of a given number of trips to generate
@@ -96,7 +96,7 @@ for i in range(1,50000):
 		trip_accepted = True
 	# now we have a couple of random points with tolerable distances
 	out.write('\n{},{},{}'.format(o['uid'], d['uid'], ndist/1000))
-	print( i )
+	if i % 50 == 0: print( i )
 
 #def gaussian(x,bandwidth):
 #	"""height of the gaussian distribution at distance x from mean with bw"""
