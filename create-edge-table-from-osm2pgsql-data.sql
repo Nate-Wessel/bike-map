@@ -32,7 +32,7 @@ SELECT
 	0::int AS f, -- forward count
 	0::int AS r, -- reverse count
 	-- geometry
-	ST_MakeLine(n1.geom,n2.geom) AS edge 
+	ST_SetSRID(ST_MakeLine(n1.geom,n2.geom),4326) AS edge
 INTO street_edges
 FROM ordered_way_nodes AS n1 
 JOIN ordered_way_nodes AS n2 ON 
