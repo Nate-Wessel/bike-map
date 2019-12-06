@@ -17,6 +17,8 @@ import psycopg2, requests, json
 from random import sample, shuffle
 from shapely import wkb
 
+NUM_TRIPS = 50000
+
 def euc_dist(p1,p2):
 	return p1['local_geom'].distance( p2['local_geom'] )
 
@@ -84,19 +86,19 @@ out = open('/home/nate/bike-map/demand/data/syn-trips.csv','w+')
 out.write('o,d,dist')
 
 # for each of a given number of trips to generate
-for i in range(1,50000):
+for i in range(1,NUM_TRIPS):
 	trip_accepted = False 
 	o = random_point()
 	while not trip_accepted:
 		d = random_point()
-		if euc_dist(o,d) > 10000: continue
+		if euc_dist(o,d) > 8000: continue
 		ndist = net_dist(o,d)
-		if ndist > 10000: continue
+		if ndist > 8000: continue
 		# conditions passed - accept trip
 		trip_accepted = True
 	# now we have a couple of random points with tolerable distances
 	out.write('\n{},{},{}'.format(o['uid'], d['uid'], ndist/1000))
-	if i % 50 == 0: print( i )
+	if (NUM_TRIPS-i) % 50 == 0: print( NUM_TRIPS-i )
 
 #def gaussian(x,bandwidth):
 #	"""height of the gaussian distribution at distance x from mean with bw"""
