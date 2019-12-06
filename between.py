@@ -1,9 +1,5 @@
-import psycopg2, requests, json, random, math
-
-# connect to the census data DB
-conn_string = ("host='localhost' dbname='bikemap' user='nate' password='mink'")
-conn = psycopg2.connect(conn_string)
-cursor = conn.cursor()
+import requests, json, random, math
+from DBconnection import cursor
 
 # get a list of origin -> destination trips to route
 print("Getting trips")
