@@ -5,3 +5,5 @@ data/*.osm
 data/nodepairs.csv
 
 working-files/
+
+__pycache__
