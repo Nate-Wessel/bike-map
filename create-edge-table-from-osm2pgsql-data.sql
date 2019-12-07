@@ -28,6 +28,7 @@ SELECT
 	w.tags::hstore -> 'cycleway:right' AS "cycleway:right",
 	w.tags::hstore -> 'bicycle' AS bicycle,
 	w.tags::hstore -> 'oneway' AS oneway,
+	w.tags::hstore -> 'service' AS service,
 	ST_Transform(ST_MakeLine(n1.geom,n2.geom),3857) AS edge
 INTO street_edges
 FROM ordered_way_nodes AS n1 
@@ -39,9 +40,17 @@ JOIN street_ways AS w ON
 
 ALTER TABLE street_edges 
 	ADD COLUMN uid serial PRIMARY KEY,
-	ADD COLUMN renovated boolean DEFAULT FALSE,
+	ADD COLUMN render boolean DEFAULT TRUE,
+	ADD COLUMN renovated boolean DEFAULT FALSE, -- just for testing
 	ADD COLUMN f integer DEFAULT 0, -- forward count
-	ADD COLUMN r integer DEFAULT 0; -- reverse count
+	ADD COLUMN r integer DEFAULT 0; -- reverse count 
+
+-- certain types of ways in the edge table should not render by default
+UPDATE street_edges SET render = FALSE 
+WHERE 
+	highway IN ('footway','service','steps','bus_stop') 
+	OR 
+	(highway = 'path' AND bicycle IS NULL OR bicycle NOT IN ('yes','designated'));
 
 -- index for faster updates and rendering
 CREATE INDEX ON street_edges USING GIST(edge);
