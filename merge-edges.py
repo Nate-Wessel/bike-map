@@ -25,8 +25,7 @@ node_cursor.execute("""
 	), node_degree AS (
 		SELECT nid, COUNT(*) AS degree 
 		FROM nodes GROUP BY nid
-	) SELECT nid FROM node_degree WHERE degree = 2
-	LIMIT 25;
+	) SELECT nid FROM node_degree WHERE degree = 2;
 """)
 nodes = node_cursor.fetchall()
 print(len(nodes),'to check/merge')
@@ -36,7 +35,8 @@ for node_id, in nodes:
 	# get the two edges connected to the given node
 	print('\tnode_id =',node_id)
 	edge_cursor.execute("""
-		SELECT uid, way_id, node_1, node_2, f, r, edge
+		SELECT 
+			uid, way_id, node_1, node_2, f, r, edge
 		FROM street_edges 
 		WHERE %(node_id)s IN (node_1,node_2)
 		LIMIT 2;
@@ -59,20 +59,26 @@ for node_id, in nodes:
 		newGeom = LineString( c2[:len(c1)-1] + list(c1) )
 	else: 
 		print('as yet unhandled exception')
+		# this is because edges currently all go the same way 
+		# because they are from the same original way
 		break 
-	# insert the new edge and delete the others
-	"""
-		DELETE FROM street_edges WHERE uid IN (%(edge1_id)s,%(edge2_id)s);
-		INSERT INTO street_edges () VALUES ()
+	# delete the first edge and update the second one
+	edge_cursor.execute("""
+		DELETE FROM street_edges WHERE uid = %(e1id)s;
+		UPDATE street_edges SET 
+			node_1 = %(node_1)s, 
+			node_2 = %(node_2)s,
+			edge = ST_SetSRID(%(geom)s::geometry,3857),
+			renovated = TRUE
+		WHERE uid = %(e2id)s;
 	""",{
-		# to delete
-		'edge1_id':e1['uid'], 'edge2_id':e2['uid'],
-		# to insert
-		'way_id': e1['way_id'],
-		'node_1': n1, 'node_2': n2,
-		'f': e1['f'], 'r': e1['r'],
+		'e1id':e1['uid'],
+		'e2id':e2['uid'],
+		'node_1': n1, 
+		'node_2': n2,
 		'geom': dumpWKB(newGeom,hex=True)
-	}
+	})
+	connection.commit()
 
 
 
