@@ -28,10 +28,6 @@ SELECT
 	w.tags::hstore -> 'cycleway:right' AS "cycleway:right",
 	w.tags::hstore -> 'bicycle' AS bicycle,
 	w.tags::hstore -> 'oneway' AS oneway,
-	-- temporarily empty fields
-	0::int AS f, -- forward count
-	0::int AS r, -- reverse count
-	-- geometry
 	ST_Transform(ST_MakeLine(n1.geom,n2.geom),3857) AS edge
 INTO street_edges
 FROM ordered_way_nodes AS n1 
@@ -41,7 +37,11 @@ JOIN ordered_way_nodes AS n2 ON
 JOIN street_ways AS w ON
 	w.id = n1.way_id;
 
-ALTER TABLE street_edges ADD COLUMN edge_uid serial PRIMARY KEY;
+ALTER TABLE street_edges 
+	ADD COLUMN uid serial PRIMARY KEY,
+	ADD COLUMN renovated boolean DEFAULT FALSE,
+	ADD COLUMN f integer DEFAULT 0, -- forward count
+	ADD COLUMN r integer DEFAULT 0; -- reverse count
 
 -- index for faster updates and rendering
 CREATE INDEX ON street_edges USING GIST(edge);
