@@ -13,12 +13,13 @@ def mergeWKB(line1,line2):
 	g1, g2 = loadWKB(line1,hex=True), loadWKB(line2,hex=True)
 	# make sure we have what we thhink we have
 	assert len(g1.coords) >= 2 and len(g2.coords) >= 2
-	assert geom1.coords[-1] == geom2.coords[0]
+	assert g1.coords[-1] == g2.coords[0]
 	# merge the lines
 	newGeom = LineString( 
-		geom1.coords[:len(geom1.coords)-1] + list(geom2.coords) 
+		g1.coords[:len(g1.coords)-1] + list(g2.coords) 
 	)
-	assert len(geom1.coords)+len(geom2.coords)-1 == len(newGeom.coords)
+	# check that lengths are identical within floating point tolerance
+	assert abs((g1.length + g2.length)-newGeom.length) < 0.00001
 	# return a binary geom string
 	return dumpWKB(newGeom,hex=True)
 
@@ -34,10 +35,12 @@ node_cursor.execute("""
 	) SELECT nid FROM node_degree WHERE degree = 2;
 """)
 nodes = node_cursor.fetchall()
-print(len(nodes),'to check/merge')
+print('merging edges')
 
 keys = ['uid','way_id','node_1','node_2','name','f','r','geom']
-for node_id, in nodes:
+for i, node_id, in enumerate(nodes):
+	if i % 300 == 0:
+		print('\rfinished checking',"{:.2%}".format(i/len(nodes)),'of',len(nodes),'nodes',end='\r')
 	# get the two edges connected to the given node
 	edge_cursor.execute("""
 		SELECT 
@@ -53,7 +56,6 @@ for node_id, in nodes:
 	if r1['way_id'] != r2['way_id']: continue
 	if r1['f']      != r2['f']:      continue
 	if r1['r']      != r2['r']:      continue
-	print('\tmerging',(r1['name'] if r1['name']!=None else '-'),'on node',node_id)
 	if r1['node_2'] == r2['node_1']: 
 		n1,n2 = r1['node_1'],r2['node_2']
 		newGeom = mergeWKB(r1['geom'],r2['geom'])
