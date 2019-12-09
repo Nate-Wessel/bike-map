@@ -5,6 +5,23 @@ from shapely.wkb import loads as loadWKB, dumps as dumpWKB
 node_cursor = connection.cursor()
 edge_cursor = connection.cursor()
 
+def mergeWKB(line1,line2):
+	"""take two lines sharing a node in WKB format and return a single merged
+	line with all nodes except the repeated one. The last coordinate of line1 
+	should be identical to the first coordinate of line2."""
+	# parse the geometries
+	g1, g2 = loadWKB(line1,hex=True), loadWKB(line2,hex=True)
+	# make sure we have what we thhink we have
+	assert len(g1.coords) >= 2 and len(g2.coords) >= 2
+	assert geom1.coords[-1] == geom2.coords[0]
+	# merge the lines
+	newGeom = LineString( 
+		geom1.coords[:len(geom1.coords)-1] + list(geom2.coords) 
+	)
+	assert len(geom1.coords)+len(geom2.coords)-1 == len(newGeom.coords)
+	# return a binary geom string
+	return dumpWKB(newGeom,hex=True)
+
 # get a list of nodes (node_id) with degree = 2
 node_cursor.execute("""
 	WITH all_nodes AS (
@@ -37,21 +54,18 @@ for node_id, in nodes:
 	if r1['f']      != r2['f']:      continue
 	if r1['r']      != r2['r']:      continue
 	print('\tmerging',(r1['name'] if r1['name']!=None else '-'),'on node',node_id)
-	geom1 = loadWKB( r1['geom'], hex=True )
-	geom2 = loadWKB( r2['geom'], hex=True )
-	coords1, coords2 = geom1.coords, geom2.coords
 	if r1['node_2'] == r2['node_1']: 
 		n1,n2 = r1['node_1'],r2['node_2']
-		newGeom = LineString( coords1[:len(coords1)-1] + list(coords2) )
+		newGeom = mergeWKB(r1['geom'],r2['geom'])
 	elif r2['node_2'] == r1['node_1']:
 		n1,n2 = r2['node_1'],r1['node_2']
-		newGeom = LineString( coords2[:len(coords2)-1] + list(coords1) )
+		newGeom = mergeWKB(r2['geom'],r1['geom'])
 	else: 
 		print('as yet unhandled exception')
 		# this is because edges currently all go the same way 
 		# because they are from the same original way
 		break 
-	assert len(coords1)+len(coords2)-1 == len(newGeom.coords)
+
 	# delete the first edge and update the second one
 	edge_cursor.execute("""
 		DELETE FROM street_edges WHERE uid = %(edge1id)s;
@@ -66,7 +80,7 @@ for node_id, in nodes:
 		'edge2id':r2['uid'],
 		'node_1': n1, 
 		'node_2': n2,
-		'geom': dumpWKB(newGeom,hex=True)
+		'geom': newGeom
 	})
 	connection.commit()
 
