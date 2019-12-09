@@ -48,7 +48,11 @@ ALTER TABLE street_edges
 -- certain types of ways in the edge table should not render by default
 UPDATE street_edges SET render = FALSE 
 WHERE 
-	highway IN ('footway','service','steps','bus_stop') 
+	highway IN (
+		'footway','service','steps','corridor', 
+		'bus_stop','raceway',
+		'motorway','motorway_link' 
+	) 
 	OR 
 	(highway = 'path' AND bicycle IS NULL OR bicycle NOT IN ('yes','designated'));
 
