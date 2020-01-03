@@ -1,16 +1,40 @@
 from DBconnection import connection
 from shapely.geometry import Point, LineString
 from shapely.wkb import loads as loadWKB, dumps as dumpWKB
+import psycopg2.extras
 
-node_cursor = connection.cursor()
-edge_cursor = connection.cursor()
+node_cursor = connection.cursor(
+	cursor_factory = psycopg2.extras.NamedTupleCursor 
+)
+edge_cursor = connection.cursor(
+	cursor_factory = psycopg2.extras.NamedTupleCursor 
+)
+
+class Edge(object):
+
+	def __init__(self,db_record):
+		self.db_id         = db_record.uid
+		self.osm_way_id    = db_record.way_id
+		self.name          = db_record.name
+		self.node_1_id     = db_record.node_1
+		self.node_2_id     = db_record.node_2
+		self.forward_count = db_record.f
+		self.reverse_count = db_record.r
+		self.geometry      = loadWKB( db_record.geom, hex=True )
+
+	def __eq__(self,other):
+		# only accept perfect matches for now
+		if self.osm_way_id    != other.osm_way_id:    return False
+		if self.forward_count != other.forward_count: return False
+		if self.reverse_count != other.reverse_count: return False
+		return True
 
 def mergeWKB(line1,line2):
 	"""take two lines sharing a node in WKB format and return a single merged
 	line with all nodes except the repeated one. The last coordinate of line1 
 	should be identical to the first coordinate of line2."""
 	# parse the geometries
-	g1, g2 = loadWKB(line1,hex=True), loadWKB(line2,hex=True)
+	g1, g2 = line1, line2
 	# make sure we have what we thhink we have
 	assert len(g1.coords) >= 2 and len(g2.coords) >= 2
 	assert g1.coords[-1] == g2.coords[0]
@@ -37,7 +61,6 @@ node_cursor.execute("""
 nodes = node_cursor.fetchall()
 print('merging edges')
 
-keys = ['uid','way_id','node_1','node_2','name','f','r','geom']
 for i, node_id, in enumerate(nodes):
 	if i % 300 == 0:
 		print('\rfinished checking',"{:.2%}".format(i/len(nodes)),'of',len(nodes),'nodes',end='\r')
@@ -50,18 +73,15 @@ for i, node_id, in enumerate(nodes):
 	""",{ 'node_id': node_id } );
 	assert edge_cursor.rowcount == 2
 	# parse as dicts
-	records = [ dict(zip(keys,edge)) for edge in edge_cursor.fetchall() ]
-	r1,r2 = records[0],records[1]
-	# only accept perfect matches
-	if r1['way_id'] != r2['way_id']: continue
-	if r1['f']      != r2['f']:      continue
-	if r1['r']      != r2['r']:      continue
-	if r1['node_2'] == r2['node_1']: 
-		n1,n2 = r1['node_1'],r2['node_2']
-		newGeom = mergeWKB(r1['geom'],r2['geom'])
-	elif r2['node_2'] == r1['node_1']:
-		n1,n2 = r2['node_1'],r1['node_2']
-		newGeom = mergeWKB(r2['geom'],r1['geom'])
+	edges = [ Edge(record) for record in edge_cursor.fetchall() ]
+	e1,e2 = edges[0],edges[1]
+	if e1 != e2: continue
+	if e1.node_2_id == e2.node_1_id: 
+		n1,n2 = e1.node_1_id,e2.node_2_id
+		newGeom = mergeWKB(e1.geometry,e2.geometry)
+	elif e2.node_2_id == e1.node_1_id:
+		n1,n2 = e2.node_1_id,e1.node_2_id
+		newGeom = mergeWKB(e2.geometry,e1.geometry)
 	else: 
 		print('as yet unhandled exception')
 		# this is because edges currently all go the same way 
@@ -78,8 +98,8 @@ for i, node_id, in enumerate(nodes):
 			renovated = TRUE
 		WHERE uid = %(edge2id)s;
 	""",{
-		'edge1id':r1['uid'],
-		'edge2id':r2['uid'],
+		'edge1id':e1.db_id,
+		'edge2id':e2.db_id,
 		'node_1': n1, 
 		'node_2': n2,
 		'geom': newGeom
