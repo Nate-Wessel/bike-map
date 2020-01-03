@@ -13,7 +13,7 @@ edge_cursor = connection.cursor(
 class Edge(object):
 
 	def __init__(self,db_record):
-		self.db_id         = db_record.uid
+		self.db_uid         = db_record.uid
 		self.osm_way_id    = db_record.way_id
 		self.name          = db_record.name
 		self.node_1_id     = db_record.node_1
@@ -90,16 +90,16 @@ for i, node_id, in enumerate(nodes):
 
 	# delete the first edge and update the second one
 	edge_cursor.execute("""
-		DELETE FROM street_edges WHERE uid = %(edge1id)s;
 		UPDATE street_edges SET 
 			node_1 = %(node_1)s, 
 			node_2 = %(node_2)s,
 			edge = ST_SetSRID(%(geom)s::geometry,3857),
 			renovated = TRUE
-		WHERE uid = %(edge2id)s;
+		WHERE uid = %(edge1id)s;
+		DELETE FROM street_edges WHERE uid = %(edge2id)s;
 	""",{
-		'edge1id':e1.db_id,
-		'edge2id':e2.db_id,
+		'edge1id':e1.db_uid,
+		'edge2id':e2.db_uid,
 		'node_1': n1, 
 		'node_2': n2,
 		'geom': newGeom
