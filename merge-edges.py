@@ -3,9 +3,7 @@ from shapely.geometry import Point, LineString
 from shapely.wkb import loads as loadWKB, dumps as dumpWKB
 import psycopg2.extras
 
-node_cursor = connection.cursor(
-	cursor_factory = psycopg2.extras.NamedTupleCursor 
-)
+node_cursor = connection.cursor()
 edge_cursor = connection.cursor(
 	cursor_factory = psycopg2.extras.NamedTupleCursor 
 )
@@ -13,7 +11,7 @@ edge_cursor = connection.cursor(
 class Edge(object):
 
 	def __init__(self,db_record):
-		self.db_uid         = db_record.uid
+		self.db_uid        = db_record.uid
 		self.osm_way_id    = db_record.way_id
 		self.name          = db_record.name
 		self.node_1_id     = db_record.node_1
@@ -28,6 +26,9 @@ class Edge(object):
 		if self.forward_count != other.forward_count: return False
 		if self.reverse_count != other.reverse_count: return False
 		return True
+
+	def __repr__(self):
+		return "Edge osm_id:{},db_uid:{}".format(self.osm_way_id, self.db_uid)
 
 def mergeWKB(line1,line2):
 	"""take two lines sharing a node in WKB format and return a single merged
@@ -84,7 +85,8 @@ for i, node_id, in enumerate(nodes):
 		newGeom = mergeWKB(e2.geometry,e1.geometry)
 	else: 
 		print('as yet unhandled exception')
-		# this is because edges currently all go the same way 
+		print(e1,e2)
+		# this is because edges should currently all go the same direction 
 		# because they are from the same original way
 		break 
 
