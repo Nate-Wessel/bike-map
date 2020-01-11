@@ -12,19 +12,16 @@ class Edge(object):
 
 	def __init__(self,db_record):
 		self.db_uid        = db_record.uid
-		self.osm_way_id    = db_record.way_id
+		self.osm_id        = db_record.way_id
 		self.name          = db_record.name
-		self.node_1_id     = db_record.node_1
-		self.node_2_id     = db_record.node_2
+		self.from_id       = db_record.node_1
+		self.to_id         = db_record.node_2
 		self.forward_count = db_record.f
 		self.reverse_count = db_record.r
 		self.geometry      = loadWKB( db_record.geom, hex=True )
 
-	def __eq__(self,other):
-		return self.osm_way_id == other.osm_way_id
-
 	def __repr__(self):
-		return "Edge osm_id:{}, db_uid:{}".format(self.osm_way_id, self.db_uid)
+		return "Edge osm_id:{}, db_uid:{}".format(self.osm_id, self.db_uid)
 
 def mergeLine(line1,line2):
 	"""take two lines sharing a node and return a single merged line with all 
@@ -50,49 +47,50 @@ node_cursor.execute("""
 		FROM all_nodes GROUP BY nid
 	) SELECT nid FROM node_degree WHERE degree = 2 ORDER BY random();
 """)
-nodes = node_cursor.fetchall()
-print('merging edges')
 
-for i, node_id, in enumerate(nodes):
-	if i % 300 == 0:
-		print('\rfinished checking',"{:.2%}".format(i/len(nodes)),'of',len(nodes),'nodes',end='\r')
+# for each potential node to merge on 
+for merge_node_id, in node_cursor:
+	if node_cursor.rownumber % 100 == 0: # output progress bar
+		print(
+			'\rfinished checking',
+			"{:.2%}".format(node_cursor.rownumber/node_cursor.rowcount),
+			'of',node_cursor.rowcount,
+			'nodes',end='\r'
+		)
 	# get the two edges connected to the given node
 	edge_cursor.execute("""
-		SELECT 
-			uid, way_id, node_1, node_2, name, f, r, edge AS geom
+		SELECT uid, way_id, node_1, node_2, name, f, r, edge AS geom
 		FROM street_edges 
 		WHERE %(node_id)s IN (node_1,node_2) AND render;
-	""",{ 'node_id': node_id } );
-	assert edge_cursor.rowcount <= 2
-	if edge_cursor.rowcount < 2: continue # can happen with circular ways
-	edges = [ Edge(record) for record in edge_cursor.fetchall() ]
-	e1,e2 = edges[0],edges[1]
-	if e1 != e2: 
+	""",{ 'node_id': merge_node_id } );
+	assert edge_cursor.rowcount == 2
+	edgeA, edgeB = ( Edge(record) for record in edge_cursor.fetchall() )
 		# only merge edges from the same way for now
-		continue
-	# we have a merge about to go down
-	if e1.node_2_id == e2.node_1_id: 
-		n1,n2 = e1.node_1_id,e2.node_2_id
-		newGeom = mergeLine(e1.geometry,e2.geometry)
-	elif e2.node_2_id == e1.node_1_id:
-		n1,n2 = e2.node_1_id,e1.node_2_id
-		newGeom = mergeLine(e2.geometry,e1.geometry)
+	if edgeA.osm_id != edgeB.osm_id: continue 
+	# we have a merge about to go down; check which edge goes where
+	if edgeA.to_id == merge_node_id == edgeB.from_id:
+		new_from_id = edgeA.from_id
+		new_to_id   = edgeB.to_id
+		newGeom     = mergeLine( edgeA.geometry, edgeB.geometry )
+	elif edgeB.to_id == merge_node_id == edgeA.from_id:
+		new_from_id = edgeB.from_id
+		new_to_id   = edgeA.to_id 
+		newGeom     = mergeLine(edgeB.geometry,edgeA.geometry)
 	else: 
 		print('\nas yet unhandled exception')
-		print(e1,e2)
+		print(merge_node_id, edgeA,edgeB)
 		# this is because edges should currently all go the same direction 
 		# because they are from the same original way
 		continue
-	# average (weighted) the forward and reverse values
-	new_forward_count = (
-			e1.forward_count * e1.geometry.length + 
-			e2.forward_count * e2.geometry.length
-		) / 2 / newGeom.length
-	new_reverse_count = (
-			e1.reverse_count * e1.geometry.length + 
-			e2.reverse_count * e2.geometry.length
-		) / 2 /  newGeom.length
-
+	# average (length weighted) forward and reverse values
+	new_forward_count = round( (
+			edgeA.forward_count * edgeA.geometry.length + 
+			edgeB.forward_count * edgeB.geometry.length
+		) / newGeom.length )
+	new_reverse_count = round( (
+			edgeA.reverse_count * edgeA.geometry.length + 
+			edgeB.reverse_count * edgeB.geometry.length
+		) / newGeom.length )
 	# delete the first edge and update the second one
 	edge_cursor.execute("""
 		UPDATE street_edges SET 
@@ -105,13 +103,13 @@ for i, node_id, in enumerate(nodes):
 		WHERE uid = %(edge1id)s;
 		DELETE FROM street_edges WHERE uid = %(edge2id)s;
 	""",{
-		'edge1id':e1.db_uid,
-		'edge2id':e2.db_uid,
-		'node_1': n1, 
-		'node_2': n2,
+		'edge1id':edgeA.db_uid,
+		'edge2id':edgeB.db_uid,
+		'node_1': new_from_id,
+		'node_2': new_to_id,
 		'f':new_forward_count,
 		'r':new_reverse_count,
-		'geom': dumpWKB(newGeom,hex=True)
+		'geom': dumpWKB( newGeom, hex=True )
 	})
 	connection.commit()
 
