@@ -3,6 +3,24 @@ library('RPostgreSQL')
 drv = dbDriver("PostgreSQL")
 con = dbConnect(drv, dbname="bikemap",user="nate",password='mink')
 # get the data
-x = dbGetQuery(con, "SELECT f,r,ST_Length(edge::geography) AS length FROM gta_edges ORDER BY random() LIMIT 500000;")
+x = as_tibble( dbGetQuery(
+  con,
+  paste(
+    "SELECT f, r, ST_Length(edge) AS length, name", 
+    "FROM street_edges",
+    "WHERE render AND",
+    "ST_Intersects(",
+  	  "edge,",
+		  "(SELECT way FROM context_polygon WHERE name='Old Toronto')",
+	  ");"
+  )
+) )
 # density plot of edge counts
-x %>% ggplot() + geom_density(aes(x=log(f+r+1),weight=length/sum(length)))
+x %>%
+  mutate(
+    y = pmax(f,r),
+    w = length / sum(length)
+  ) %>%
+  ggplot() + 
+    geom_density( aes( x=y, weight=w ) ) + 
+    geom_vline( aes( xintercept=30 ),color='red' )
