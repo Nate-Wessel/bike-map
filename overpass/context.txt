@@ -52,10 +52,8 @@ rel(2989349); map_to_area->.TOarea;
 	);
 )->.filtered;
 
-( // clip to anything in or around Old Toronto
-	nwr.filtered(area.TOarea);    // in
-	nwr.filtered(around.TO:5000); // around
-)->.clipped;
+// clip to Old Toronto
+nwr.filtered(area.TOarea)->.clipped;
 
 (.clipped;>;); 
 
