@@ -8,25 +8,6 @@ Anyone interested in discussing the project, contributing, or raising an issue c
 
 The project is further documented in the [project prospectus](prospectus/prospectus.pdf). You may also be interested to read a [paper about the predecessor to this map](http://cartographicperspectives.org/index.php/journal/article/view/1243/1414). 
 
-## TODO ##
-There are several big domains of work that remain to be done, outlined and subdivided below. 
-
-* Map simplification
-    * Simplify split ways ([example](https://www.openstreetmap.org/#map=19/43.79249/-79.44591)) into single lines (all zoom levels). I'm working on finding these systematically with [Overpass](https://gist.github.com/Nate-Wessel/e7d72da7c7c12e00a472b41537334f8d). 
-    * Use hierarchy in map reduction for low zoom levels. Research needed on appropriate algorithms/techniques.
-    * Smooth and resample DEM. Alternatively convert to simplified contour polygons to reduce filesize of vector map derivatives. 
-    * ... 
-
-* OSM data verification and cleanup
-    * Systematically verify/survey bicycle facilities
-    * Once it is finalized [which landuse data](overpass/context.txt) will be included in the final map, these will need to be verified/refined in many cases - much of this data was imported a long time ago and hasn't been reviewed. 
-
-* Route Selection
-    * I need to decide on a representative route-selection strategy and ensure this is instantiated in the [OSRM bike.lua profile](osrm-profiles/default-bicycle.lua), or create such a profile. Another alternative is to define several strategies and let uses choose with some degree of interactive preference specification.
-
-* Choice of Emphasis
-    * The spatial distribution of simulated bike trips strongly effects the degree of emphasis placed on different parts of the map. I have not yet systematically explored what the desired effect should be e.g. between urban vs rural, or residential vs industrial/commercial areas. 
-
 ## Code Dependencies ##
 There are a few major software dependencies:
 - QGIS
