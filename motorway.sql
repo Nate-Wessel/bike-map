@@ -3,6 +3,8 @@ Creates a table of motorway edges, with an attribute indicating how far away
 from the street network they are. 
 */
 
+\echo Separating out the motorways
+
 DROP TABLE IF EXISTS mw; -- MotorWays
 -- select out just the motorways
 CREATE TABLE mw AS 
@@ -32,7 +34,7 @@ JOIN (
 ) AS s
 ON mw_nodes.node = s.node;
 
--- calculate the minimum distance to each segment and update street_edges 
+-- get the minimum directed distance to each segment and update
 
 WITH sub AS (
 	SELECT 
@@ -57,6 +59,32 @@ WITH sub AS (
 )
 UPDATE mw set dist_from = avg_cost
 FROM sub2 WHERE sub2.id = mw.id;
+
+-- do it again but backwards
+ -- TODO refactor to make this more elegant?
+WITH sub AS (
+	SELECT 
+		end_vid AS node,
+		MIN(agg_cost) AS min_cost
+	FROM pgr_dijkstraCost(
+		'SELECT id, target AS source, source AS target, cost FROM mw;',
+		(SELECT ARRAY_AGG(node) FROM connecting_nodes),
+		(SELECT ARRAY_AGG(node) FROM mw_nodes),
+		TRUE
+	)
+	GROUP BY end_vid
+), sub2 AS (
+	SELECT 
+		mw.id, mw.source, mw.target, 
+		s1.min_cost, s2.min_cost,
+		(s1.min_cost + s2.min_cost) / 2 AS avg_cost
+	FROM mw 
+	JOIN sub AS s1 ON mw.source = s1.node
+	JOIN sub AS s2 ON mw.target = s2.node
+	ORDER BY id
+)
+UPDATE mw set dist_from = avg_cost
+FROM sub2 WHERE sub2.id = mw.id AND avg_cost < dist_from;
 
 
 

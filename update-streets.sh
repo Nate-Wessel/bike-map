@@ -11,6 +11,9 @@ osm2pgsql --slim --hstore-all --prefix street -d bikemap --style osm2pgsql/ways.
 # create edges table
 psql -d bikemap -f create-edge-table-from-osm2pgsql-data.sql
 
+# create motorways table
+psql -d bikemap -f motorways.sql
+
 # process the data for OSRM-backend
 mkdir ~/scripts/osrm-backend/osm-data
 cp data/streets.osm ~/scripts/osrm-backend/osm-data/bike.osm
