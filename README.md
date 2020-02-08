@@ -11,7 +11,7 @@ The project is further documented in the [project prospectus](prospectus/prospec
 ## Code Dependencies ##
 There are a few major software dependencies:
 - QGIS
-- PostgreSQL + PostGIS and hstore extensions
+- PostgreSQL + PostGIS, hstore, pgRouting extensions
 - [OSRM-backend](https://github.com/Project-OSRM/osrm-backend)
 - Python3 (and `psycopg2`,`requests`,`json` and a few others) 
 - osm2psql
