@@ -24,8 +24,11 @@ SELECT DISTINCT unnest(array[source,target]) AS node FROM mw;
 
 -- find nodes connecting motorways and streets on the map
 -- i.e. all nodes to route from
-CREATE TEMPORARY TABLE connecting_nodes AS 
-SELECT DISTINCT mw_nodes.node
+DROP TABLE IF EXISTS connecting_nodes;
+CREATE TABLE connecting_nodes AS 
+SELECT 
+	DISTINCT mw_nodes.node,
+	NULL::geometry(POINT,4326) AS geom
 FROM  mw_nodes
 JOIN (
 	SELECT DISTINCT unnest(array[node_1,node_2])AS node 
@@ -33,6 +36,14 @@ JOIN (
 	WHERE render
 ) AS s
 ON mw_nodes.node = s.node;
+
+-- add node geometry for debugging
+UPDATE connecting_nodes SET geom = ST_SetSRID(ST_MakePoint( 
+	n.lon/10000000.0, 
+	n.lat/10000000.0 
+),4326)
+FROM street_nodes AS n
+WHERE n.id = connecting_nodes.node;
 
 -- get the minimum directed distance to each segment and update
 
