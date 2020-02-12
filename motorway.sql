@@ -14,7 +14,7 @@ SELECT
 	node_2 AS target,
 	ST_Length(edge) AS cost,
 	edge AS geom,
-	0::real AS dist_from 
+	-1::real AS dist_from 
 FROM street_edges 
 WHERE highway IN ('motorway','motorway_link');
 
