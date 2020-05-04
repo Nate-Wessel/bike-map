@@ -16,3 +16,4 @@ way        landuse        text       polygon
 node,way   amenity        text       linear,polygon
 way        aeroway        text       linear,polygon
 way        building       text       polygon
+way        man_made       text       polygon
