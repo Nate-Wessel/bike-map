@@ -51,7 +51,7 @@ WHERE
 	highway IN (
 		'footway','service','steps','corridor', 
 		'bus_stop','raceway',
-		'motorway','motorway_link' 
+		'motorway','motorway_link','proposed'
 	) 
 	OR 
 	(highway = 'path' AND bicycle IS NULL OR bicycle NOT IN ('yes','designated'));
