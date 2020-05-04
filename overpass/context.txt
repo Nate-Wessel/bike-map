@@ -16,8 +16,8 @@ rel(2989349); map_to_area->.TOarea;
 	rel[natural=water];
 	node[natural=tree];
 
-	way[leisure~'^park$|golf_course'];
-	rel[leisure~'^park$|golf_course'];
+	way[leisure~'^park$|golf_course|nature_reserve'];
+	rel[leisure~'^park$|golf_course|nature_reserve'];
   
 	way[landuse~'cemetery|industrial|railway|forest|retail'];
 
