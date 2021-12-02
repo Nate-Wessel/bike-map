@@ -1,9 +1,9 @@
 // define a global bounding box (s,w,n,e)
-[bbox:43.56,-79.59,43.78,-79.16];
+[bbox:43.56,-79.65,43.87,-79.11];
 
-// Old Toronto boundary by id for clipping the data later
-rel(2989349)->.TO;
-rel(2989349); map_to_area->.TOarea;
+// Toronto boundary by id for clipping the data later
+rel(324211)->.TO;
+rel(324211); map_to_area->.TOarea;
 
 
 // select ways and relations of interest from within the bounding box
