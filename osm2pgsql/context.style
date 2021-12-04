@@ -9,7 +9,7 @@ node,way   name           text       linear,polygon
 node,way   natural        text       polygon
 node,way   railway        text       linear
 node,way   shop           text       
-node,war   operator       text       
+node,way   operator       text       
 way        waterway       text       linear,polygon
 way        leisure        text       polygon
 way        landuse        text       polygon

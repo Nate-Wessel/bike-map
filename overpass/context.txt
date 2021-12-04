@@ -16,17 +16,15 @@ rel(324211); map_to_area->.TOarea;
 	rel[natural=water];
 	node[natural=tree];
 
-	way[leisure~'^park$|golf_course|nature_reserve'];
-	rel[leisure~'^park$|golf_course|nature_reserve'];
+	nwr[leisure~'^park$|golf_course|nature_reserve'];
   
-	way[landuse~'cemetery|industrial|railway|forest|retail'];
+	nwr[landuse~'cemetery|industrial|railway|forest|retail'];
 	way[man_made=wastewater_plant];
 
 	way[building=retail];
 	rel[building=retail];
 
-	way[amenity=university];
-	rel[amenity=university];
+	nwr[amenity=university];
 
 	rel[route=train][operator~'GO Transit|Union Pearson Express'];
 
