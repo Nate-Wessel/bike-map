@@ -12,9 +12,9 @@ rel(324211); map_to_area->.TOarea;
 	rel[route=bicycle];
 )->.streets;
 
-( // clip anything not in or around Old Toronto
-	nwr.streets(area.TOarea);    // in
-	nwr.streets(around.TO:5000); // around
+( // clip anything not in or around Toronto
+	nwr.streets(area.TOarea);    // in Toronto
+	nwr.streets(around.TO:5000); // within 5km of boundary line
 );
 
 // join any children of the above ways and relations

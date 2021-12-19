@@ -26,6 +26,7 @@ SELECT
 	w.tags::hstore -> 'footway' AS footway,
 	w.tags::hstore -> 'cycleway:left' AS "cycleway:left",
 	w.tags::hstore -> 'cycleway:right' AS "cycleway:right",
+	w.tags::hstore -> 'cycleway:both' AS "cycleway:both",
 	w.tags::hstore -> 'bicycle' AS bicycle,
 	w.tags::hstore -> 'oneway' AS oneway,
 	w.tags::hstore -> 'service' AS service,
