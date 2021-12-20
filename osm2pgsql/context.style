@@ -8,6 +8,9 @@
 node,way   name           text       linear,polygon
 node,way   natural        text       polygon
 node,way   railway        text       linear
+way        highway        text       linear
+way        service        text       linear
+way        tunnel         text       linear
 node,way   shop           text       
 node,way   operator       text       
 way        waterway       text       linear,polygon

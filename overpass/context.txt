@@ -21,15 +21,16 @@ rel(324211); map_to_area->.TOarea;
 	nwr[landuse~'cemetery|industrial|railway|forest|retail'];
 	way[man_made=wastewater_plant];
 
-	way[building=retail];
-	rel[building=retail];
+	nwr[building=retail];
 
 	nwr[amenity=university];
 
-	rel[route=train][operator~'GO Transit|Union Pearson Express'];
+	way[railway];
+	
+	way[highway~'motorway*'];
+	way[highway=service][service=alley];
 
-	way[aeroway~'runway|aerodrome|taxiway|terminal'];
-	rel[aeroway~'aerodrome|terminal'];
+	nwr[aeroway~'runway|aerodrome|taxiway|terminal'];
 
 	nwr[shop=bicycle];
 	nwr[amenity=bicycle_rental];
@@ -38,21 +39,8 @@ rel(324211); map_to_area->.TOarea;
 
 )->.prefilter;
 
-// filter out data we don't want
-(
-	( // keep everything except CanVec sources
-		nwr.prefilter[!source];
-		nwr.prefilter[source!~'CanVec'];
-	);
-	-
-	( // exclude two giant lakes from the above set
-		rel[name='Lake Huron'];
-		rel[name='Lake Erie'];
-	);
-)->.filtered;
-
-// clip to Old Toronto
-nwr.filtered(area.TOarea)->.clipped;
+// clip to Toronto
+nwr.prefilter(area.TOarea)->.clipped;
 
 (.clipped;>;); 
 
