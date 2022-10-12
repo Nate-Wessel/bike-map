@@ -1,5 +1,5 @@
 // define a global bounding box (s,w,n,e)
-[bbox:43.56,-79.65,43.87,-79.11];
+[timeout:300][bbox:43.56,-79.65,43.87,-79.11];
 
 // Old Toronto boundary by id for clipping the data later
 rel(324211)->.TO;

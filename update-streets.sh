@@ -3,7 +3,7 @@
 cd ~/bike-map
 
 # get new street data from the overpass API
-wget -O data/streets.osm --post-file=overpass/ways.txt https://overpass-api.de/api/interpreter
+wget -O data/streets.osm --post-file=overpass/ways.overpassql https://overpass-api.de/api/interpreter
 
 # import way data into postGIS
 osm2pgsql --slim --hstore-all --prefix street -d bikemap --style osm2pgsql/ways.style data/streets.osm
@@ -41,4 +41,4 @@ psql -d bikemap -f update-edge-bike-counts.sql
 kill $OSRMserverPID
 
 # merge needlessly split edges
-python3 merge-edges.py
+#python3 merge-edges.py
