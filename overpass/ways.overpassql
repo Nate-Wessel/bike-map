@@ -20,4 +20,4 @@ rel(324211); map_to_area->.TOarea;
 // join any children of the above ways and relations
 (._;>;); 
 
-out body qt;
+out body;
