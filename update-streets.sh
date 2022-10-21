@@ -16,7 +16,7 @@ cd ~/scripts/osrm-backend
 
 build/osrm-extract -p ~/bike-map/osrm-profiles/default-bicycle.lua osm-data/bike.osm
 build/osrm-contract osm-data/bike.osrm
- this is not needed for routing
+#this is not needed for routing
 rm osm-data/bike.osm
 # run the server in the background but be ready to kill it later
 build/osrm-routed osm-data/bike.osrm > ~/bike-map/temp/osrm-output.txt & 
