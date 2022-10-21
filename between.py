@@ -1,5 +1,6 @@
 import requests, json, random, math
 from DBconnection import cursor
+from alive_progress import alive_bar
 
 # get a list of origin -> destination trips to route
 print("Getting trips")
@@ -13,7 +14,6 @@ cursor.execute("""
 	FROM syn_trips;
 """)
 trips = cursor.fetchall()
-print('Starting...',len(trips),'trips')
 
 # OSRM API parameters
 options = {
@@ -36,32 +36,32 @@ def add_edge(node1,node2):
 	else:
 		edges[key][n1] += 1
 
-for trip in trips:
-	Olon,Olat,Dlon,Dlat,row = trip
-	# craft and send the request
-	response = requests.get(
-		'http://localhost:5000/route/v1/bicycle/'+
-		str(Olon)+','+str(Olat)+';'+str(Dlon)+','+str(Dlat),
-		params=options,
-		timeout=10 # actually takes ~5ms
-	)
-	# parse the output
-	j = json.loads(response.text)
-	if j['code'] != 'Ok':
-		print(response.text,'\n')
-		continue
-	# get the nodelist
-	nodes = j['routes'][0]['legs'][0]['annotation']['nodes']
+with alive_bar(len(trips)) as bar:
+	for trip in trips:
+		Olon,Olat,Dlon,Dlat,row = trip
+		# craft and send the request
+		response = requests.get(
+			'http://localhost:5000/route/v1/bicycle/'+
+			str(Olon)+','+str(Olat)+';'+str(Dlon)+','+str(Dlat),
+			params=options,
+			timeout=10 # actually takes ~5ms
+		)
+		# parse the output
+		j = json.loads(response.text)
+		if j['code'] != 'Ok':
+			print(response.text,'\n')
+			continue
+		# get the nodelist
+		nodes = j['routes'][0]['legs'][0]['annotation']['nodes']
 
-	# iterate over internode segments
-	n1 = nodes[0]
-	for i in range(1,len(nodes)):
-		n2 = nodes[i]
-		add_edge(n1,n2)
-		# set for next iteration
-		n1 = n2
-	if row % 100 == 0:
-		print( len(trips) - row, 'paths remaining' )
+		# iterate over internode segments
+		n1 = nodes[0]
+		for i in range(1,len(nodes)):
+			n2 = nodes[i]
+			add_edge(n1,n2)
+			# set for next iteration
+			n1 = n2
+		bar()
 
 # write the output
 outfile = open('data/nodepairs.csv','w+')
