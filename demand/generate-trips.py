@@ -16,6 +16,7 @@
 import psycopg2, requests, json
 from random import sample, shuffle
 from shapely import wkb
+from alive_progress import alive_bar
 
 NUM_TRIPS = 50000
 
@@ -85,20 +86,21 @@ def random_point():
 out = open('/home/nate/bike-map/demand/data/syn-trips.csv','w+')
 out.write('o,d,dist')
 
-# for each of a given number of trips to generate
-for i in range(1,NUM_TRIPS):
-	trip_accepted = False 
-	o = random_point()
-	while not trip_accepted:
-		d = random_point()
-		if euc_dist(o,d) > 8000: continue
-		ndist = net_dist(o,d)
-		if ndist > 8000: continue
-		# conditions passed - accept trip
-		trip_accepted = True
-	# now we have a couple of random points with tolerable distances
-	out.write('\n{},{},{}'.format(o['uid'], d['uid'], ndist/1000))
-	if (NUM_TRIPS-i) % 50 == 0: print( NUM_TRIPS-i )
+with alive_bar(NUM_TRIPS) as bar:
+	# for each of a given number of trips to generate
+	for i in range(1,NUM_TRIPS):
+		trip_accepted = False 
+		o = random_point()
+		while not trip_accepted:
+			d = random_point()
+			if euc_dist(o,d) > 8000: continue
+			ndist = net_dist(o,d)
+			if ndist > 8000: continue
+			# conditions passed - accept trip
+			trip_accepted = True
+		# now we have a couple of random points with tolerable distances
+		out.write('\n{},{},{}'.format(o['uid'], d['uid'], ndist/1000))
+		bar()
 
 #def gaussian(x,bandwidth):
 #	"""height of the gaussian distribution at distance x from mean with bw"""
