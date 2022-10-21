@@ -29,7 +29,7 @@ edges = {}
 def add_edge(node1,node2):
 	global edges
 	# key by unique node pairs
-	key = '{}-{}'.format(n1,n2) if n1 < n2 else '{}-{}'.format(n2,n1)
+	key = f'{node1}-{node2}' if node1 < node2 else f'{node2}-{node1}'
 	# increment the count
 	if key not in edges:
 		edges[key] = {n1:1,n2:0}
@@ -41,8 +41,7 @@ with alive_bar(len(trips)) as bar:
 		Olon,Olat,Dlon,Dlat,row = trip
 		# craft and send the request
 		response = requests.get(
-			'http://localhost:5000/route/v1/bicycle/'+
-			str(Olon)+','+str(Olat)+';'+str(Dlon)+','+str(Dlat),
+			f'http://localhost:5000/route/v1/bicycle/{Olon},{Olat};{Dlon},{Dlat}',
 			params=options,
 			timeout=10 # actually takes ~5ms
 		)
@@ -68,6 +67,6 @@ outfile = open('data/nodepairs.csv','w+')
 outfile.write('nodeA,nodeB,fromA,fromB\n')
 for i,edge in edges.items():
 	n = list(edge.keys())
-	outfile.write( '{},{},{},{}\n'.format(n[0],n[1],edge[n[0]],edge[n[1]]) )
+	outfile.write( f'{n[0]},{n[1]},{edge[n[0]]},{edge[n[1]]}\n' )
 outfile.close()
 
