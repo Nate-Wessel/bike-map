@@ -12,7 +12,7 @@ WITH way_nodes AS (
 ), ordered_way_nodes AS (
 	SELECT 
 		wn.way_id, wn.node_id, wn.row_number,
-		ST_SetSRID(ST_MakePoint( n.lon/10000000.0, n.lat/10000000.0 ),4326) AS geom
+		ST_SetSRID(ST_MakePoint(n.lon/10^7,n.lat/10^7),4326) AS geom
 	FROM way_nodes AS wn
 	JOIN street_nodes AS n ON wn.node_id = n.id
 )
@@ -30,7 +30,7 @@ SELECT
 	w.tags::hstore -> 'bicycle' AS bicycle,
 	w.tags::hstore -> 'oneway' AS oneway,
 	w.tags::hstore -> 'service' AS service,
-	ST_Transform(ST_MakeLine(n1.geom,n2.geom),3857) AS edge
+	ST_MakeLine(n1.geom,n2.geom)::geography AS edge
 INTO street_edges
 FROM ordered_way_nodes AS n1 
 JOIN ordered_way_nodes AS n2 ON 
