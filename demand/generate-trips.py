@@ -99,7 +99,7 @@ with alive_bar(NUM_TRIPS) as bar:
 			# conditions passed - accept trip
 			trip_accepted = True
 		# now we have a couple of random points with tolerable distances
-		out.write('\n{},{},{}'.format(o['uid'], d['uid'], ndist/1000))
+		out.write( f"\n{o['uid']},{d['uid']},{ndist/1000}" )
 		bar()
 
 #def gaussian(x,bandwidth):
