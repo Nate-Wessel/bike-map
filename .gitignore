@@ -9,3 +9,5 @@ demand/data/
 working-files/
 
 __pycache__
+
+venv/

@@ -25,6 +25,9 @@ OSRMserverPID=$!
 # return to original folder
 cd ~/bike-map
 
+# activate the virtual environment
+source venv/bin/activate
+
 # synthesize travel demand
 psql -d bikemap -f demand/generate-ODs.sql
 python3 demand/generate-trips.py # needs OSRM to be running
