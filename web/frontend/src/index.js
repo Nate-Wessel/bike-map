@@ -16,30 +16,31 @@ p.getHeader().then( header => {
 		container: 'map',
 		zoom: header.maxZoom - 2,
 		center: [header.centerLon, header.centerLat],
+		bearing: -17,
 		style: {
-		version:8,
-		sources: {
-			"example_source": {
-				type: "vector",
-				url: `pmtiles://${url}`
-			}
-		},
-		layers: [
-			{
-				id:"streets",
-				source: "example_source",
-				'source-layer':"street_edges",
-				type: "line",
-				paint: {
-					'line-color': "black",
-					'line-width': 3
-				},
-				layout: {
-					'line-join': 'round',
-					'line-cap': 'round'
+			version:8,
+			sources: {
+				"example_source": {
+					type: "vector",
+					url: `pmtiles://${url}`
 				}
-			}
-		]
+			},
+			layers: [
+				{
+					id:"streets",
+					source: "example_source",
+					'source-layer':"street_edges",
+					type: "line",
+					paint: {
+						'line-color': "black",
+						'line-width': ['ln', ['+',['get', 'f'],['get', 'r']]]
+					},
+					layout: {
+						'line-join': 'round',
+						'line-cap': 'round'
+					}
+				}
+			]
 		}
 	})
 	map.showTileBoundaries = true;
