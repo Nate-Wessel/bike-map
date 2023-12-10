@@ -26,12 +26,17 @@ p.getHeader().then( header => {
 		},
 		layers: [
 			{
-				"id":"streets",
-				"source": "example_source",
-				"source-layer":"street_edges",
-				"type": "line",
-				"paint": {
-					"line-color": "black"
+				id:"streets",
+				source: "example_source",
+				'source-layer':"street_edges",
+				type: "line",
+				paint: {
+					'line-color': "black",
+					'line-width': 3
+				},
+				layout: {
+					'line-join': 'round',
+					'line-cap': 'round'
 				}
 			}
 		]
