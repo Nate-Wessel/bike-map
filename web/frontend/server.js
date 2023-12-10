@@ -5,7 +5,7 @@ const path = require('path')
 const app = express()
 const { existsSync } = require('fs')
 
-const extensions = ['.ico','.js','.css','.jpg','.png','.map','.ttf','.svg','.csv']
+const extensions = ['.js','.css','.pmtiles','.ttf','.svg','.csv']
 
 // This code makes sure that any request that does not match a static file
 // in the build folder, will just serve index.html. Client side routing is
