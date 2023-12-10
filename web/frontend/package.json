@@ -1,0 +1,28 @@
+{
+  "name": "toronto-bike-map-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nate-Wessel/bike-map.git"
+  },
+  "keywords": [
+    "bike",
+    "bicycle",
+    "map",
+    "cartography"
+  ],
+  "author": "Nate Wessel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nate-Wessel/bike-map/issues"
+  },
+  "homepage": "https://github.com/Nate-Wessel/bike-map#readme",
+  "devDependencies": {
+    "express": "^4.18.2"
+  }
+}
