@@ -52,8 +52,11 @@ conn.autocommit = True
 # get a list of points 
 print("Getting points")
 cursor1.execute("""
-	SELECT uid, ST_Transform(geom,4326), geom
-	FROM syn_ods;
+	SELECT
+		uid,
+		geom, -- 4326
+		ST_Transform(geom, 2592) AS loc_geom
+	FROM synthetic_trip_ods;
 """)
 points = [
 	{
@@ -93,9 +96,11 @@ with alive_bar(NUM_TRIPS) as bar:
 		o = random_point()
 		while not trip_accepted:
 			d = random_point()
-			if euc_dist(o,d) > 8000: continue
+			if euc_dist(o,d) > 8000 or euc_dist(o,d) < 100:
+				continue
 			ndist = net_dist(o,d)
-			if ndist > 8000: continue
+			if ndist > 8000 or ndist < 100:
+				continue
 			# conditions passed - accept trip
 			trip_accepted = True
 		# now we have a couple of random points with tolerable distances
