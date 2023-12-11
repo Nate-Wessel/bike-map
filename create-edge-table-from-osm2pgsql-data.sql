@@ -50,8 +50,8 @@ ALTER TABLE street_edges
 UPDATE street_edges SET render = FALSE 
 WHERE 
 	highway IN (
-		'footway','service','steps','corridor', 
-		'bus_stop','raceway',
+		'footway','service','steps','corridor',
+		'bus_stop','raceway', 'elevator',
 		'motorway','motorway_link','proposed'
 	) 
 	OR 
