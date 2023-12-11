@@ -1,3 +1,7 @@
+# edges start off split at every single node
+# this reassembles them where they are adjacent
+# and all properties are identical
+
 from DBconnection import connection
 from shapely.geometry import Point, LineString
 from shapely.wkb import loads as loadWKB, dumps as dumpWKB
@@ -40,13 +44,22 @@ def mergeLine(line1,line2):
 # get a list of nodes (node_id) with degree = 2
 node_cursor.execute("""
 	WITH all_nodes AS (
-		SELECT node_1 AS nid FROM street_edges WHERE render
+		SELECT node_1 AS nid
+		FROM street_edges
+		WHERE render
+		
 		UNION ALL
-		SELECT node_2 AS nid FROM street_edges WHERE render
-	), node_degree AS (
-		SELECT nid, COUNT(*) AS degree 
-		FROM all_nodes GROUP BY nid
-	) SELECT nid FROM node_degree WHERE degree = 2 ORDER BY random();
+		
+		SELECT node_2 AS nid
+		FROM street_edges
+		WHERE render
+	)
+
+	SELECT nid
+	FROM all_nodes
+	GROUP BY nid
+	HAVING COUNT(*) = 2
+	ORDER BY random();
 """)
 
 # for each potential node to merge on
@@ -54,11 +67,25 @@ with alive_bar(node_cursor.rowcount) as bar:
 	for merge_node_id, in node_cursor:
 		# get the two edges connected to the given node
 		edge_cursor.execute("""
-			SELECT uid, way_id, node_1, node_2, name, f, r, edge AS geom
-			FROM street_edges 
-			WHERE %(node_id)s IN (node_1,node_2) AND render;
+			SELECT
+				uid,
+				way_id,
+				node_1,
+				node_2,
+				name,
+				f,
+				r,
+				edge::geometry AS geom -- 4326
+			FROM street_edges
+			WHERE
+				%(node_id)s IN (node_1, node_2)
+				AND render;
 		""",{ 'node_id': merge_node_id } );
-		assert edge_cursor.rowcount == 2
+		try:
+			assert edge_cursor.rowcount == 2
+		except:
+			continue
+		
 		edgeA, edgeB = ( Edge(record) for record in edge_cursor.fetchall() )
 			# only merge edges from the same way for now
 		if edgeA.osm_id != edgeB.osm_id: continue 
@@ -98,13 +125,13 @@ with alive_bar(node_cursor.rowcount) as bar:
 			WHERE uid = %(edge1id)s;
 			DELETE FROM street_edges WHERE uid = %(edge2id)s;
 		""",{
-			'edge1id':edgeA.db_uid,
-			'edge2id':edgeB.db_uid,
+			'edge1id': edgeA.db_uid,
+			'edge2id': edgeB.db_uid,
 			'node_1': new_from_id,
 			'node_2': new_to_id,
-			'f':new_forward_count,
-			'r':new_reverse_count,
-			'geom': dumpWKB( newGeom, hex=True )
+			'f': new_forward_count,
+			'r': new_reverse_count,
+			'geom': dumpWKB( newGeom, hex=True ) # 4326
 		})
 		connection.commit()
 		bar()

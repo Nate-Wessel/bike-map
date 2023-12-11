@@ -43,5 +43,5 @@ psql -d bikemap -f update-edge-bike-counts.sql
 # we can now kill the server
 kill $OSRMserverPID
 
-# merge needlessly split edges
-#python3 merge-edges.py
+# re-merge needlessly split edges
+python3 merge-edges.py
