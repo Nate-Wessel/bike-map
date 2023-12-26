@@ -40,13 +40,28 @@ streets.getHeader().then( header => {
 					}
 				},
 				{
-					id: 'rail',
+					id: 'alleys',
 					source: 'context',
-					'source-layer': 'linecontext',
+					'source-layer': 'alley',
 					type: 'line',
 					paint: {
-						'line-color': 'red',
-						'line-width': 2
+						'line-color': 'grey',
+						'line-width': 0.5,
+					}
+				},
+				{
+					id: 'rail',
+					source: 'context',
+					'source-layer': 'rail',
+					type: 'line',
+					paint: {
+						'line-color': 'grey',
+						'line-width': 1,
+						'line-dasharray': [5,5]
+					},
+					layout: {
+						'line-join': 'round',
+						'line-cap': 'round'
 					}
 				},
 				{
