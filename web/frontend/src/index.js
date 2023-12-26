@@ -4,14 +4,16 @@ import * as pmtiles from 'pmtiles'
 let protocol = new pmtiles.Protocol()
 maplibregl.addProtocol("pmtiles", protocol.tile)
 
-let url = 'http://localhost:8000/out.pmtiles';
+const url = 'http://localhost:8000'
 
-const p = new pmtiles.PMTiles(url)
+const streets = new pmtiles.PMTiles(`${url}/out.pmtiles`)
+const context = new pmtiles.PMTiles(`${url}/context.pmtiles`)
 
-protocol.add(p)
+protocol.add(streets)
+protocol.add(context)
 
 // we first fetch the header so we can get the center lon, lat of the map.
-p.getHeader().then( header => {
+streets.getHeader().then( header => {
 	const map = new maplibregl.Map({
 		container: 'map',
 		zoom: header.maxZoom - 2,
@@ -22,7 +24,11 @@ p.getHeader().then( header => {
 			sources: {
 				"example_source": {
 					type: "vector",
-					url: `pmtiles://${url}`
+					url: `pmtiles://${url}/out.pmtiles`
+				},
+				"context": {
+					type: "vector",
+					url: `pmtiles://${url}/context.pmtiles`
 				}
 			},
 			layers: [
@@ -31,6 +37,16 @@ p.getHeader().then( header => {
 					type: 'background',
 					paint: {
 						'background-color': '#ccc'
+					}
+				},
+				{
+					id: 'rail',
+					source: 'context',
+					'source-layer': 'linecontext',
+					type: 'line',
+					paint: {
+						'line-color': 'red',
+						'line-width': 2
 					}
 				},
 				{
