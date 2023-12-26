@@ -27,13 +27,42 @@ p.getHeader().then( header => {
 			},
 			layers: [
 				{
-					id:"streets",
+					id: 'background',
+					type: 'background',
+					paint: {
+						'background-color': '#ccc'
+					}
+				},
+				{
+					id:"streets-under",
 					source: "example_source",
 					'source-layer':"street_edges",
 					type: "line",
 					paint: {
 						'line-color': "black",
 						'line-width': ['ln', ['+',['get', 'f'],['get', 'r']]]
+					},
+					layout: {
+						'line-join': 'round',
+						'line-cap': 'round'
+					}
+				},
+				{
+					id:"streets-over",
+					source: "example_source",
+					'source-layer':"street_edges",
+					type: "line",
+					paint: {
+						'line-color': [
+							'step',
+							['+',['get', 'f'],['get', 'r']],
+							'white',
+							100,
+							'yellow',
+							200,
+							'red'
+						],
+						'line-width': ['/', ['ln', ['+',['get', 'f'],['get', 'r']]], 2]
 					},
 					layout: {
 						'line-join': 'round',
