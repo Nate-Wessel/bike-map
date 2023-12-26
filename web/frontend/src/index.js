@@ -40,6 +40,16 @@ streets.getHeader().then( header => {
 					}
 				},
 				{
+					id: 'parks',
+					source: 'context',
+					'source-layer': 'parks',
+					type: 'fill',
+					paint: {
+						'fill-color': 'green',
+						'fill-opacity': 0.25,
+					}
+				},
+				{
 					id: 'alleys',
 					source: 'context',
 					'source-layer': 'alley',
@@ -88,9 +98,9 @@ streets.getHeader().then( header => {
 							'step',
 							['+',['get', 'f'],['get', 'r']],
 							'white',
-							100,
+							50,
 							'yellow',
-							200,
+							100,
 							'red'
 						],
 						'line-width': ['/', ['ln', ['+',['get', 'f'],['get', 'r']]], 2]

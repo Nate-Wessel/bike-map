@@ -21,11 +21,17 @@ ogr2ogr \
     "PG: dbname=$DB" \
     -sql "SELECT highway, service, ST_Transform(way,4326) AS geom FROM context_line WHERE highway = 'service' AND service = 'alley'"
 
+ogr2ogr \
+    -f GeoJSON $DATA_DIR/parks.geojson \
+    "PG: dbname=$DB" \
+    -sql "SELECT leisure, ST_transform(way,4326) AS geom FROM context_polygon WHERE leisure = 'park'"
+
 # combine in tiles / --force makes it overwrite existing output
 tippecanoe \
 	--force \
 	--minimum-zoom 11 --maximum-zoom 17 \
 	-o $WEB_DATA_DIR/context.pmtiles \
 	$DATA_DIR/rail.geojson \
-	$DATA_DIR/alley.geojson
+	$DATA_DIR/alley.geojson \
+	$DATA_DIR/parks.geojson
 
