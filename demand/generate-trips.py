@@ -44,7 +44,7 @@ def net_dist(p1,p2):
 	return j['routes'][0]['distance']
 
 # connect to the DB
-conn_string = ("host='localhost' dbname='bikemap' user='nate' password='mink'")
+conn_string = ("host='localhost' dbname='bikemap' user='nate'")
 conn = psycopg2.connect(conn_string)
 cursor1 = conn.cursor()
 conn.autocommit = True
