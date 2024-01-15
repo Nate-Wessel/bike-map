@@ -14,7 +14,7 @@ cp data/streets.osm ~/scripts/osrm-backend/osm-data/bike.osm
 
 cd ~/scripts/osrm-backend
 
-build/osrm-extract -p ~/bike-map/osrm-profiles/default-bicycle.lua osm-data/bike.osm
+build/osrm-extract -p ~/scripts/bike-map/osrm-profiles/default-bicycle.lua osm-data/bike.osm
 build/osrm-contract osm-data/bike.osrm
 #this is not needed for routing
 rm osm-data/bike.osm
