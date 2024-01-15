@@ -86,7 +86,7 @@ def random_point():
 	return point
 
 # open an output file
-out = open('/home/nate/bike-map/demand/data/syn-trips.csv','w+')
+out = open('/home/nate/scripts/bike-map/demand/data/syn-trips.csv','w+')
 out.write('o,d,dist')
 
 with alive_bar(NUM_TRIPS) as bar:
