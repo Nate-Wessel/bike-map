@@ -4,7 +4,6 @@ data/*.tif
 data/*.osm
 data/nodepairs.csv
 data/DEM/
-demand/data/
 
 working-files/
 
