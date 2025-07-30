@@ -8,8 +8,8 @@ CREATE TABLE syn_trips (
 	geom geometry(LINESTRING, 4326)
 );
 
-COPY syn_trips (o_uid, d_uid, dist) 
-FROM '/home/nate/bike-map/demand/data/syn-trips.csv' CSV HEADER;
+COPY syn_trips (o_uid, d_uid, dist)
+FROM '/home/nate/scripts/bike-map/demand/data/syn-trips.csv' CSV HEADER;
 
 WITH sub AS (
 	SELECT 
