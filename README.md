@@ -4,7 +4,7 @@ Almost all [bike maps](https://en.wikipedia.org/wiki/Bicycle_map) are actually m
 
 This is done using a realistic bicycle trip-planning application and data from OpenStreetMap. Hundreds of thousands of bicycle trips are simulated across the street network and edges which are used more often by our simulated cyclist are placed higher in the visual hierarchy of the resulting map. This is equivalent to the concept of betweenness in graph theory, or to an uncongested traffic simulation model in transport engineering. The difference from the later is that cycling is the only mode considered and the spatial distribution of trips need not be realistic. 
 
-The code in this project is potentially applicable to anywhere in the world with decent OpenStreetMap data though since it is being developed in Toronto it will necessarily first try to tackle local scales and and issues. 
+The code in this project is potentially applicable to anywhere in the world with decent OpenStreetMap data though since it is being developed in Toronto it will necessarily first try to tackle local scales and issues. 
 
 Anyone interested in discussing the project, contributing, or raising an issue can join the conversation on Slack (civictechto.slack.com in the #bike-map channel) or leave an issue here. 
 
