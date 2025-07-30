@@ -6,8 +6,6 @@ This is done using a realistic bicycle trip-planning application and data from O
 
 The code in this project is potentially applicable to anywhere in the world with decent OpenStreetMap data though since it is being developed in Toronto it will necessarily first try to tackle local scales and issues. 
 
-Anyone interested in discussing the project, contributing, or raising an issue can join the conversation on Slack (civictechto.slack.com in the #bike-map channel) or leave an issue here. 
-
 The project is further documented in the [project prospectus](prospectus/prospectus.pdf). You may also be interested to read a [paper about the predecessor to this map](http://cartographicperspectives.org/index.php/journal/article/view/1243/1414). 
 
 ## Code Dependencies
